@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Events</title>
+
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link rel="stylesheet" href="content/style.css">
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-expand-lg" style="background-color: #bfa1fc">
+        <div class="container-fluid">
+            <div>
+                <a class="nav-link" href="index.html">Home</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a id ="opportunities" class="nav-link"  href="opportunities.html">Opportunities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="events.html">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html" >Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html" >About Us</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            More
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="privacypolicy.html">Privacy Policy</a></li>
+                            <li><a class="dropdown-item" href="termsofservice.html">Terms Of Service</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                    <form class="search d-flex" role="search">
+                        <input id="search" class="form-control me-2 align-items-end" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<br>
+<h1 class="text-center display-3">
+    Events
+</h1>
+<div id="calendarDisplay">
+    <p>Want to know what events are coming up soon, Just look at our calendar</p>
+    <h1 class="text-sm-end display-6 text-bg-dark">
+        February 2025
+    </h1>
+    <br>
+    <table class="table table-striped table-dark" >
+        <thead>
+        <tr>
+            <th scope="col">Sunday</th>
+            <th scope="col">Monday</th>
+            <th scope="col">Tuesday</th>
+            <th scope="col">Wednesday</th>
+            <th scope="col">Thursday</th>
+            <th scope="col">Friday</th>
+            <th scope="col">Saturday</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td><br><br></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>1 <br><br>
+            Child Wealth
+            </td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+            <td>
+                5 <br><br>
+                Garage Sale
+            </td>
+            <td>6</td>
+            <td>7</td>
+            <td>8</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>10</td>
+            <td>11</td>
+            <td>12 <br><br></td>
+            <td>13 <br><br>
+                Environment Workshop
+            </td>
+            <td>14</td>
+            <td>15</td>
+
+        </tr>
+        <tr>
+            <td>16 <br><br>
+                Pup day
+            </td>
+            <td>17</td>
+            <td>18</td>
+            <td>19 <br><br></td>
+            <td>20</td>
+            <td>21</td>
+            <td>22</td>
+
+        </tr>
+        <tr>
+            <td>23</td>
+            <td>24</td>
+            <td>25<br><br>
+            Teaching Workshop</td>
+            <td>26</td>
+            <td>27</td>
+            <td>28</td>
+            <td>1</td>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container" id="eventsDisplay" style="display:none">
+
+<h2>
+    Workshops
+</h2>
+    <p class="fw-bold">Garage Sale Workshop</p>
+    <p>
+        Description: In this workshop, you shall be trained for the garage sales
+    </p>
+    <p>Date: 5th February                          Time:9:00am </p>
+
+    <p class="fw-bold">Environmental Workshop</p>
+    <p>
+        Description: In this workshop, you shall be trained on how to plant trees and take care of them.
+    </p>
+    <p>Date:13th February                          Time:10:00am </p>
+
+    <p class="fw-bold">Teaching Workshop</p>
+    <p>
+        Description: In this workshop, we shall go over basics of teaching so that its easy to help out
+        with the children and to teach them
+    </p>
+    <p>
+        Date:25th February                    Time:10:00am
+    </p>
+    <h2>
+    Fundraisers
+    </h2>
+    <p class="fw-bold">Child Wealth Fundraiser</p>
+    <p>
+        Description: This is a fundraiser organized for the purpose of raising funds to send kids to school
+    </p>
+    <p>Date:1st February                     Time:10:00am </p>
+
+    <p class="fw-bold">Health Care Go Fund Me</p>
+    <p>
+        Description: This fundraiser will be held for the sole purpose of raising funds to send the less needy
+        to hospitals
+    </p>
+    <p>Date:15th February                  Time:12:00pm</p>
+
+    <p class="fw-bold">Pup Day</p>
+    <p>
+        Description: This Fundraiser will be for the sole purpose of raising funds to provide for the shelter animals
+    <p>
+        Date: 16th February                      Time: 9:00am
+    </p>
+
+<h2>
+    Cleanups
+</h2>
+    <p class="fw-bold">Community Service</p>
+    <p>
+       Description: This activity will be all about cleaning the environment
+    </p>
+    <p>
+        Date: 1st March                     Time: 9:00am
+    </p>
+</div>
+
+<form action="">
+    <div>
+        <p>Filter events by:</p>
+    </div>
+    <div class="input-group mb-3">
+        <input  id="calendarCheckBox" name="CheckBox" type="radio"
+                class="form-check-input me-2" checked>
+        <label class="form-check-label" for="calendarCheckBox">Calendar</label>
+    </div>
+    <div class="input-group mb-3">
+        <input  id="eventsCheckBox" name="CheckBox" type="radio"
+                class="form-check-input me-2">
+        <label class="form-check-label" for="eventsCheckBox">Events</label>
+    </div>
+</form>
+
+<script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
