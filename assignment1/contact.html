@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact</title>
+
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link rel="stylesheet" href="content/style.css">
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg" style="background-color: #bfa1fc">
+        <div class="container-fluid">
+            <div>
+                <a class="nav-link" href="index.html">Home</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a id ="opportunities" class="nav-link" href="opportunities.html">Opportunities</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="events.html">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="contact.html" >Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html" >About Us</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            More
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="privacypolicy.html">Privacy Policy</a></li>
+                            <li><a class="dropdown-item" href="termsofservice.html">Terms Of Service</a></li>
+
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="bg-dark text-white" >
+    <br><br>
+    <h3 class="align-text-center bg-dark text-white">Contact us</h3>
+    <p class="bg-dark text-white">
+        Do you still have questions, no worries! we are here to answer all of them. Please do fill in the form below.
+        Its important to give us your personal details so that we can easily get in touch with you to answer your questions
+    </p>
+
+    <p class="bg-dark text-white">Here at Volunteer Connect, we also value customer feed back!</p>
+    <br>
+    <h2 class="text-center bg-dark text-white">Volunteer Connect Contact Form</h2>
+
+    <form class="bg-dark text-white" action="">
+        <div class="text-center">
+            <label for="fName">First Name</label>
+            <input type="text" name="fName" id="fName" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="lName">Last Name</label>
+            <input type="text" name="lName" id="lName" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="subject">Subject</label>
+            <input type="text" name="subject" id="subject" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="box" >Drop your message</label><br><br>
+            <textarea class="form-control-lg" id="box" required>
+
+            </textarea>
+        </div>
+        <br>
+        <div class="text-center">
+            <button class="btn btn-primary" id="submitContact" type="submit">Submit</button>
+        </div>
+        <br>
+        <div class="font-weight-bold text-center text-bg-danger" id="message"></div>
+        <br>
+        <br>
+
+    </form>
+</div>
+
+<script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
