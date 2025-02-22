@@ -410,7 +410,7 @@
     async function DisplayNews() {
 
         // Set constants such as an apikey, url, country and so on
-        const apiKey = "1375cb340e2e9fb4c1a6322cf27a404c";
+        const apiKey = "ab3611c7e9b40fdd35eb3b491d703bd6";
         const country = "ca";
         const url = `http://api.mediastack.com/v1/news?access_key=${apiKey}&countries=${country}`
 
