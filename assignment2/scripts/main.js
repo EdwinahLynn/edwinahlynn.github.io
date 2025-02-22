@@ -818,41 +818,70 @@
     async function Start() {
         console.log("Starting...");
         console.log(`Current document title is ${document.title}`);
+
+        // Call the login function
         CheckLogin();
 
+        // Get obtain the div container and get the links inside it plus the search bar
         let searchBox = document.getElementById("search");
         let divContainer = document.getElementById("hasLinks");
         let links = divContainer.getElementsByTagName("a");
 
-        searchBox.addEventListener("keyup", function (event) {
+        // Filter
+        // Attach an event listener for the search box everytime a letter is pressed
+        searchBox.addEventListener("keyup", function () {
+            // Change the value type in the box to lower case letters
             let searchBoxValue = searchBox.value.toLowerCase();
+
+            // Loop through all link items
             for (let i = 0; i < links.length; i++) {
+
+                // Get the text in each link
                 let text = links[i].innerHTML;
+
+                // convert the text to lower cases letters and see if the entered text matches the link texts
                 if (text.toLowerCase().indexOf(searchBoxValue) > -1) {
+
+                    // Assign the link texts to the placeholder attribute(search box value)
                     searchBox.placeholder = links[i].innerHTML;
-                } else {
+                }
+                // If the texts don't match, don't display a value
+                else {
                     searchBox.placeholder = "";
                 }
             }
-        })
+        });
+        // The above filter idea is referenced from :
+            //  How TO - Search Menu .W3schools. https://www.w3schools.com/howto/howto_js_search_menu.asp
 
+        // Attach an event listener to the search button when its clicked
         let searchButton = document.getElementById("searchButton");
         searchButton.addEventListener("click", function (event) {
+
+            // Prevent the default behavior
             event.preventDefault();
+
+            // Get the div container and all links in it, plus the search bar
             let divContainer = document.getElementById("hasLinks");
             let links = divContainer.getElementsByTagName("a");
             let searchBox = document.getElementById("search");
+
+            // Change the entered value to lower case letters
             let searchBoxValue = searchBox.value.trim().toLowerCase();
+
+            // Loop through each link
             for (let i = 0; i < links.length; i++) {
+                // Convert the link texts to lower case letters
                 let text = links[i].innerText.toLowerCase();
 
+                // Check if the entered text matches the link text
                 if (searchBoxValue === text) {
+                    // If they match, go to that page
                     location.href = links[i].href;
                     return;
                 }
             }
         });
-
 
     // Create switch statements that call different functions each time a different page is loaded
         switch(document.title){
