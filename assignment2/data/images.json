@@ -3,12 +3,12 @@
   [
     {
       "Title": "Tree Planting",
-      "src": "/photos/volunteer.jpg",
+      "src": "photos/volunteer.jpg",
       "alt": "volunteers planting trees"
     },
     {
       "Title": "Garbage Collection",
-      "src": "/photos/volunteer2.jpg",
+      "src": "photos/volunteer2.jpg",
       "alt": "Collecting rubbish as a team"
     }
   ]
