@@ -138,67 +138,13 @@
         </tbody>
     </table>
 </div>
-<div class="container" id="eventsDisplay" style="display:none">
 
-<h2>
-    Workshops
-</h2>
-    <p class="fw-bold">Garage Sale Workshop</p>
-    <p>
-        Description: In this workshop, you shall be trained for the garage sales
-    </p>
-    <p>Date: 5th February                          Time:9:00am </p>
+<div class="container" id="eventsDisplay">
+    <p id="errorMessage"></p>
 
-    <p class="fw-bold">Environmental Workshop</p>
-    <p>
-        Description: In this workshop, you shall be trained on how to plant trees and take care of them.
-    </p>
-    <p>Date:13th February                          Time:10:00am </p>
-
-    <p class="fw-bold">Teaching Workshop</p>
-    <p>
-        Description: In this workshop, we shall go over basics of teaching so that its easy to help out
-        with the children and to teach them
-    </p>
-    <p>
-        Date:25th February                    Time:10:00am
-    </p>
-    <h2>
-    Fundraisers
-    </h2>
-    <p class="fw-bold">Child Wealth Fundraiser</p>
-    <p>
-        Description: This is a fundraiser organized for the purpose of raising funds to send kids to school
-    </p>
-    <p>Date:1st February                     Time:10:00am </p>
-
-    <p class="fw-bold">Health Care Go Fund Me</p>
-    <p>
-        Description: This fundraiser will be held for the sole purpose of raising funds to send the less needy
-        to hospitals
-    </p>
-    <p>Date:15th February                  Time:12:00pm</p>
-
-    <p class="fw-bold">Pup Day</p>
-    <p>
-        Description: This Fundraiser will be for the sole purpose of raising funds to provide for the shelter animals
-    <p>
-        Date: 16th February                      Time: 9:00am
-    </p>
-
-<h2>
-    Cleanups
-</h2>
-    <p class="fw-bold">Community Service</p>
-    <p>
-       Description: This activity will be all about cleaning the environment
-    </p>
-    <p>
-        Date: 1st March                     Time: 9:00am
-    </p>
 </div>
 
-<form action="">
+<form id="forButtons" action="">
     <div>
         <p>Filter events by:</p>
     </div>
@@ -211,6 +157,16 @@
         <input  id="eventsCheckBox" name="CheckBox" type="radio"
                 class="form-check-input me-2">
         <label class="form-check-label" for="eventsCheckBox">Events</label>
+    </div>
+    <div class="input-group mb-3">
+        <input  id="DateCheckBox" name="CheckBox" type="radio"
+                class="form-check-input me-2">
+        <label class="form-check-label" for="DateCheckBox">Date</label>
+    </div>
+    <div class="input-group mb-3">
+        <input  id="LocationCheckBox" name="CheckBox" type="radio"
+                class="form-check-input me-2">
+        <label class="form-check-label" for="LocationCheckBox">Location</label>
     </div>
 </form>
 

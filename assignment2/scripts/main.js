@@ -8,24 +8,269 @@
 
 (function (){
 
+    // Create a function for loading events based on the event type
+    async function LoadEventsType(){
+
+        // Check to see if the div tag is empty
+        let divTag = document.getElementById("eventsDisplay");
+
+        // Empty the div tag if it's not empty
+        if (divTag.innerHTML !== "") {
+            divTag.innerHTML = "";
+        }
+        console.log("LoadEvents Info");
+
+        try{
+            // Create a function to load the first event type(workshops) in the json file
+            async function eventTypes(eventName,events){
+
+                // Create a heading tag and add it to the body
+                let body = document.body;
+                let heading = document.createElement("h2");
+                heading.textContent = eventName;
+                divTag.appendChild(heading);
+
+
+                // Create a loop to run through the elements in the json file
+                events.forEach(event => {
+                    console.log("in the loop");
+
+                    // Create paragraph elements for the information in the json file
+                    let eventName = document.createElement("p");
+                    let eventDescription = document.createElement("p");
+                    let eventDateTime = document.createElement("p");
+                    let location = document.createElement("p");
+                    location.style.marginBottom = "50px";
+
+                    // Set attributes and text content for the paragraph elements
+                    eventName.setAttribute("class", "fw-bold");
+                    eventName.textContent = event.Name;
+                    eventDescription.textContent = event.Description;
+                    eventDateTime.textContent = event.Date;
+                    eventDateTime.textContent += event.Time;
+                    location.textContent = event.Location;
+
+                    // Add the paragraph tags to the div tag
+                    divTag.appendChild(eventName);
+                    divTag.appendChild(eventDescription);
+                    divTag.appendChild(eventDateTime);
+                    divTag.appendChild(location);
+
+
+                    // Insert the div tag with all its content before the radio buttons in the body
+                    let form = document.getElementById("forButtons");
+                    body.insertBefore(divTag, form);
+                })
+            }
+
+            // Send a request to the information.json file and throw an error is the response isn't ok
+            const response = await fetch("/data/information.json");
+            if (!response.ok){
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+
+            // Assign the json response to a variable
+            const jsonData  = await response.json();
+
+            // Attain both properties in the json file and assign to them different variables
+            const events = jsonData.info;
+            const events2 = jsonData.info2;
+
+            // If there is no array in both the variables, display and error message
+            if(!Array.isArray(events) && !Array.isArray(events2) ){
+                throw new Error("[ERROR] Json data does not contain a valid array")
+            }
+
+            // Call the function and pass through the different heading names and json properties
+            await eventTypes("Workshops",events);
+            await eventTypes("Cleanups",events2);
+        }
+        // Display an error message if there is an issue with fetching the data from the file
+        catch (error) {
+            console.error("Error occured while fetching data for events based on type", error);
+            let errorMessage = document.getElementById("errorMessage");
+            errorMessage.textContent = "Error: Cannot display this information now. Try again later";
+        }
+        // Call the footer function
+        footer();
+    }
+
+    // Create a function for loading events based on the date of the event
+    async function LoadEventsDate(){
+
+        // Check to see if the div tag is empty
+        let divTag = document.getElementById("eventsDisplay");
+
+        // Empty the div tag if it's not empty
+        if (divTag.innerHTML !== "") {
+            divTag.innerHTML = "";
+        }
+        console.log("LoadEvents Date");
+        try{
+            // Send a request to the information.json file and throw an error if the response isn't ok
+            const response = await fetch("/data/information.json");
+            if (!response.ok){
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+
+            // Assign the json response and property to a variable
+            const jsonData  = await response.json();
+            const events = jsonData.info;
+
+            // Display and error message if the variable is not an array
+            if(!Array.isArray(events)){
+                throw new Error("[ERROR] Json data does not contain a valid array")
+            }
+
+            // Create a heading tag and add it to the body
+            let body = document.body;
+            let heading = document.createElement("h2");
+            heading.textContent ="Events based on Time" ;
+            divTag.appendChild(heading);
+
+            // Create a loop to access each element in the json file
+            events.forEach(event => {
+                console.log("in the loop");
+
+                // Create paragraph tags fof the information in the json file
+                let eventName = document.createElement("p");
+                let eventDescription = document.createElement("p");
+                let eventDateTime = document.createElement("p");
+                let location = document.createElement("p");
+                location.style.marginBottom = "50px";
+
+                // Assign attributes and text content to the paragraph tags
+                eventDateTime.setAttribute("class", "fw-bold");
+                eventName.textContent = event.Name;
+                eventDescription.textContent = event.Description;
+                eventDateTime.textContent = `${event.Date}     ${event.Time}`;
+                location.textContent = event.Location;
+
+                // Add the paragraph tags to the div tag
+                divTag.appendChild(eventDateTime);
+                divTag.appendChild(eventName);
+                divTag.appendChild(eventDescription);
+                divTag.appendChild(location);
+
+                // Insert the div tag before the radio buttons
+                let form = document.getElementById("forButtons");
+                body.insertBefore(divTag, form);
+                })
+        }
+        // Display an error message if there is an error in the try block
+        catch (error) {
+            console.error("Error fetching events based on the date", error);
+            let errorMessage = document.getElementById("eventsDisplay");
+            errorMessage.textContent = "Unable to load events based on the date. Please try again later";
+        }
+
+        // Call the footer function
+        footer();
+    }
+
+    // Create a function for loading events based on the location for the event
+    async function LoadEventsLocation(){
+
+        // Check to see if the div tag is empty
+        let divTag = document.getElementById("eventsDisplay");
+
+        // Empty the div tag if it's not empty
+        if (divTag.innerHTML !== "") {
+            divTag.innerHTML = "";
+        }
+        console.log("LoadEvents Date");
+        try{
+
+            // Send a request to the information.json file and throw an error if the response isn't ok
+            const response = await fetch("/data/information.json");
+            if (!response.ok){
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+
+            // Assign the json response and property to a variable
+            const jsonData  = await response.json();
+            const events = jsonData.info;
+
+            // Display and error message if the variable is not an array
+            if(!Array.isArray(events)){
+                throw new Error("[ERROR] Json data does not contain a valid array")
+            }
+
+            // Create a heading tag and add it to the body
+            let body = document.body;
+            let heading = document.createElement("h2");
+            heading.textContent ="Events based on Location" ;
+            divTag.appendChild(heading);
+
+
+            // Create a loop to access each element in the json file
+            events.forEach(event => {
+                console.log("in the loop");
+
+                // Create paragraph tags fof the information in the json file
+                let eventName = document.createElement("p");
+                let eventDescription = document.createElement("p");
+                let eventDateTime = document.createElement("p");
+                let location = document.createElement("p");
+                eventDateTime.style.marginBottom = "50px";
+
+                // Assign attributes and text content to the paragraph tags
+                location.setAttribute("class", "fw-bold");
+                eventName.textContent = event.Name;
+                eventDescription.textContent = event.Description;
+                eventDateTime.textContent = `${event.Date}     ${event.Time}`;
+                location.textContent = event.Location;
+
+                // Add the paragpraph tags to the div tag
+                divTag.appendChild(location);
+                divTag.appendChild(eventName);
+                divTag.appendChild(eventDescription);
+                divTag.appendChild(eventDateTime);
+
+                // Insert the div tag before the radio buttons
+                let form = document.getElementById("forButtons");
+                body.insertBefore(divTag, form);
+            })
+        }
+        // Display an error message if there is an error in the try block
+        catch (error) {
+            console.error("Error fetching events data", error);
+            let errorMessage = document.getElementById("eventsDisplay");
+            errorMessage.textContent = "Unable to load events based on Location. Please try again later"
+        }
+        // Call the footer function
+        footer();
+    }
+
+
+    // Create a function to check if a user is logged in
     function CheckLogin(){
         console.log("[INFO] Checking user login status..");
 
+        // Get the element that holds the login tet in the header
         const login = document.getElementById("login");
 
+        // Display an error message if the login element isn't found
         if(!login){
             console.warn("[WARNING] LoginNav element not found! Skipping CheckLogin().");
             return;
         }
 
+        // Get the value that is stored in the session under the key user
         const userSession = sessionStorage.getItem("user");
 
+        // If there is a value, it means there is a user in the session
         if(userSession){
+
+            // Change the text in the header to logout
             login.innerHTML = `<i class = "fas fa-sign-out-alt"></i> Logout`;
             login.href = "#";
 
+            // Attach an eventlistener to the login link(now showing logout) in the header
             login.addEventListener("click", (event) =>{
                 event.preventDefault();
+
+                // Remove the user from the session and return to the login page
                 sessionStorage.removeItem("user");
                 location.href = "login.html";
             })
@@ -33,154 +278,176 @@
 
     }
 
+    // Create a function for the login page
     function DisplayLoginPage(){
+
+        // Get the login button and attach an event listener to it
         let loginButton = document.getElementById("loginButton");
         loginButton.addEventListener("click", async(event) =>{
             event.preventDefault();
 
+            // Get the values in the username and password field boxes
             const username = document.getElementById("userName").value.trim();
             const password = document.getElementById("password").value.trim();
 
             try{
 
-                // The await keyword tells JavaScript to pause here (thread) until the fetch request
+                // Send a request to the users.json file in the data folder
                 const response = await fetch("/data/users.json");
 
+                // Display an error message if the response is not ok
                 if (!response.ok){
                     throw new Error(`HTTP error: ${response.status}`);
                 }
 
+                // Assign the property to a variable
                 const jsonData  = await response.json();
-                console.log("[DEBUG] Fetched JSON Data:", jsonData);
-
                 const users = jsonData.users;
 
+                // Display an error message if the variable is not an array
                 if(!Array.isArray(users)){
                     throw new Error("[ERROR] Json data does not contain a valid array")
                 }
 
-                let success = false;
-                let authenticatedUser = null;
+                // Declare and assign values to variables that will help with session information
+                let isMatch = false;
+                let sessionUser = null;
 
+                // Loop through the array and check if the information entered matches any in the file
                 for(const user of users){
                     if(user.Username === username && user.Password === password){
-                        success = true;
-                        authenticatedUser = user;
+
+                        // If there are values that match, set isMatch to true and assign that user to the session user variable
+                        isMatch = true;
+                        sessionUser = user;
                         break;
                     }
                 }
 
+                // If there was a match from the array
                 if(success){
+
+                    // Using the key word user, place the user into that session
                     sessionStorage.setItem("user", JSON.stringify({
-                        DisplayName: authenticatedUser.DisplayName,
-                        Username: authenticatedUser.Username,
-
-
+                        DisplayName: sessionUser.DisplayName,
+                        Username: sessionUser.Username,
                     }));
+
+                    // Redirect to the main page
                     location.href = "index.html"
                 }
+
+                // If there were no matched from the array, display error messages
                 else{
-                    let errorBox = document.getElementById("errorMessageBox");
-                    errorBox.classList.add("alert", "alert-danger");
-                    errorBox.textContent = "Invalid Username or password. Please Try again";
-                    errorBox.style.display = "block";
-
-                    document.getElementById("userName").focus();
-                    document.getElementById("userName").select();
-
-                }
+                    let errorMessage = document.getElementById("errorMessage");
+                    errorMessage.classList.add("alert", "alert-danger");
+                    errorMessage.textContent = "Invalid Username or password. Please Try again";
+                    errorMessage.style.display = "block";}
             }
+
+                // Display an error message if there is an error in the try block
             catch(error){
                 console.error("[ERROR] Login failed", error);
-
             }
-
         })
-
     }
 
+
+    // Create a function that displays images from a json file
     async function DisplayImages(){
         console.log("DisplayImages called");
 
         try{
+            //Get the element in the images file gallery file that will be used to display elements
             let imageItems = document.querySelector(".carousel-inner");
-            console.log("try block");
 
-            // The await keyword tells JavaScript to pause here (thread) until the fetch request
+            // Send a request to the images.json file that has the images
             const response = await fetch("/data/images.json");
 
+            // Display an error message if the response is not ok
             if (!response.ok){
                 throw new Error(`HTTP error: ${response.status}`);
             }
 
+            // Assign the property to a variable
             const jsonData  = await response.json();
-            // console.log("[DEBUG] Fetched JSON Data:", jsonData);
-
             const images = jsonData.images;
 
+            // Display an error message if the variable is not an array
             if(!Array.isArray(images)){
                 throw new Error("[ERROR] Json data does not contain a valid array")
             }
 
+            // Loop through every content in the file
             images.forEach(image => {
+
+                // Create an image element and set its attributes
                 let img = document.createElement("img");
                 img.setAttribute("class", "d-block w-100");
                 img.setAttribute("src", image.src);
                 img.setAttribute("alt", image.alt);
-                console.log(image.alt);
+
+                // Create a div tag, set its attributes and add the img element to it
                 let divTag = document.createElement("div");
                 divTag.setAttribute("class", "carousel-item");
-
                 divTag.appendChild(img);
                 imageItems.appendChild(divTag);
-                console.log(image.alt);
 
+                // Set the first image to active
                 if (images.indexOf(image) === 0) {
                     divTag.classList.add("active");
                 }
-
-
             })
         }
+        // Display an error message if there is an error in the try block
         catch(error){
-            console.error("Error in DisplayImages:", error);  // Added error logging
-
+            console.error("Error in DisplayImages:", error);
         }
 
     }
 
+    // Create a function to display news on the main page
     async function DisplayNews(){
-        const apiKey = "1375cb340e2e9fb4c1a6322cf27a404c";
 
-        const country = "ca"; // Use the correct country code
+        // Set constants such as an apikey, url, country and so on
+        const apiKey = "1375cb340e2e9fb4c1a6322cf27a404c";
+        const country = "ca";
         const url = `http://api.mediastack.com/v1/news?access_key=${apiKey}&countries=${country}`
+
         try{
+                // Send a request to the URL
             const response = await fetch(url);
 
-            // 200 OK
+            // If the response is not ok, display and error message
             if (!response.ok) {
                 throw new Error("Failed to fetch news data from mediastack.com.");
             }
-            const data = await response.json();
-            console.log("News API Response: ", data);
-            console.log(data);
 
+            // Assigne the property to a variable
+            const newsData = await response.json();
+            console.log("News API Response: ", newsData);
+
+            // Get the element where the news will be displayed
             const newsDataElement= document.getElementById("news");
-
             let htmlContent = '';
+
+            // Loop through only two elements from the array
             for (let i = 0; i < 2; i++) {
-                const item = data.data[i];
+
+                // Use the array keys to get the values and then display them in html tags
+                const item = newsData.data[i];
                 htmlContent += `<strong>Title: </strong> ${item.title} <br><br>
                                 <strong>Description: </strong> ${item.description} <br><br>
                                 <strong>Source: </strong> ${item.source} <br><br><br>`;
             }
-
+            // Add the content to the news tag
             newsDataElement.innerHTML = htmlContent;
         }
-
+        // Display an error if there was an issue in the try block
         catch (error) {
             console.error("Error fetching data", error);
-            document.getElementById("news").textContent = "Unable to contact and display the news at this time";
+            let errorMessage = document.getElementById("news");
+            errorMessage.textContent = "Unable to contact and display the news at this time"
         }
 
     }
@@ -294,7 +561,7 @@
             let date = `<p>${row.Date}</p>`;
             let time = `<p>${row.Time}</p>`;
 
-            // Creating a sign up button for each card
+            // Creating a signup button for each card
             let button = document.createElement("button");
             button.setAttribute("type","button");
             button.setAttribute("class", "btn btn-primary SignUpBtn");
@@ -357,6 +624,8 @@
         // Getting the checkboxes
         let calendarCheckBx = document.getElementById("calendarCheckBox");
         let eventsCheckBx =document.getElementById("eventsCheckBox");
+        let dateCheckBx = document.getElementById("DateCheckBox");
+        let locationCheckBx = document.getElementById("LocationCheckBox");
         let events = document.getElementById("eventsDisplay");
         let calendar = document.getElementById("calendarDisplay");
 
@@ -374,22 +643,26 @@
                 events.style.display = "block";
             }
 
-        })
-
+        });
         // Attach an even listener to the events check box
         eventsCheckBx.addEventListener("click", function(){
-            // Hide the events and display the calendar when the calendar checkbox is checked
-            if (eventsCheckBx.checked){
-                events.style.display = "block";
-                calendar.style.display = "none";
-            }
-            // Reload the page if the calendar check box is checked
-            else
-            {
-                location.href = "./events.html";
-            }
+            console.log("evenst cheh box clikced");
+            LoadEventsType();
+            calendar.style.display = "none";
+        });
 
+        dateCheckBx.addEventListener("click", function(){
+            console.log("date check box clikced");
+            LoadEventsDate();
+            calendar.style.display = "none";
+        });
+
+        locationCheckBx.addEventListener("click", function(){
+            console.log("date check box clikced");
+            LoadEventsLocation();
+            calendar.style.display = "none";
         })
+
 
     }
 
@@ -399,7 +672,7 @@
     }
 
     // Function loads contact page is loaded
-    function DisplayContactPage(){
+    async function DisplayContactPage(){
         console.log("Calling DisplayContactPage()...");
 
         // Get the form elements
@@ -407,13 +680,15 @@
         let lastNameValue = document.getElementById("lName");
         let emailValue = document.getElementById("email");
         let subjectValue = document.getElementById("subject");
+
         let submitContactBtn = document.getElementById("submitContact");
+        let submitFeedbackBtn = document.getElementById("submitFeedback");
 
         // Create a constant for a number format that will be used to check if there are numbers in the field
         const numberRegex = /^\d+$/;
 
         // Attach an event listener to the submit page
-        submitContactBtn.addEventListener("click", function(){
+        submitContactBtn.addEventListener("click", function(event){
             // Prevent the default action of the click event (which is reloading the page)
             event.preventDefault();
 
@@ -443,6 +718,89 @@
                     }, 5000);
             }
         })
+
+        // Attach an event listener to te button that brings the feedback form
+        submitFeedbackBtn.addEventListener("click", function(event) {
+            event.preventDefault();
+
+            // Create a constant tha will be used to check some inout has numbers
+            const numberRegex = /^\d+$/;
+
+            // Get the values in the field boxes
+            let firstName = document.getElementById("firstName").value;
+            let lastName = document.getElementById("lastName").value;
+
+            // Display and error message if there is a number in the first name field box
+            if ((numberRegex.test(firstName)))
+            {
+                window.alert("No numbers allowed in the First Name text box");
+            }
+
+            // Display and error message if there is a number in the last name field box
+            else if ((numberRegex.test(lastName)))
+            {
+                window.alert("No numbers allowed in the Last Name text box");
+            }
+
+            else{
+                // Create a request object
+                let xhttp = new XMLHttpRequest();
+
+                // Get the other values in the form
+                let email = document.getElementById("emailAddress").value;
+                let messageBox = document.getElementById("messageBox").value;
+
+                // format the data for sending to the URL
+                let content = "first_name=" + (firstName) + "&last_name=" + (lastName)
+                    + "&email=" + (email)+"&message=" + (messageBox);
+
+                // Create a function that is called each time the state of the object changes
+                xhttp.onreadystatechange = function() {
+                    // If the status and readystate are okay, display a message to the user
+                    if (this.readyState === 4) {
+                        if (this.status === 200) {
+                            console.log(this.readyState);
+                            console.log(this.status);
+                            console.log("Data added successfully");
+                            alert("Your feedback has been received!. Thank you.");
+                        }
+                        // If there was a network error, display a message to the user
+                        else {
+                            console.error("Error: " + this.statusText);
+                            alert("Network Failure, Please try again later!");
+                        }
+                    }
+                }
+                // Open a post request to the website, in this case, formsspree
+                xhttp.open("POST", "https://formspree.io/f/mjkglavw", true);
+
+                // Tells the server that the request is a URL and accepts the response from the server
+                xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhttp.setRequestHeader("Accept", "application/json");
+
+                // Send the data to Form spree
+                xhttp.send(content);
+            }
+        });
+        // The else code(AJAX principles) is referenced from:
+            //AJAX - Send a Request To a Server. W3schools. https://www.w3schools.com/Xml/ajax_xmlhttprequest_send.asp
+            //AJAX - The XMLHttpRequest Object. W3schools. https://www.w3schools.com/Xml/ajax_xmlhttprequest_create.asp
+
+        let feedBackForm = document.getElementById("feedBackForm");
+        let contactForm = document.getElementById("contactForm");
+        let feedBackBtn = document.getElementById("displayFeedBackForm");
+        let contactBtn = document.getElementById("displayContactForm");
+        feedBackBtn.addEventListener("click", function(){
+
+            contactForm.style.display = "none";
+            feedBackForm.style.display = "block";
+        });
+
+        contactBtn.addEventListener("click", function(){
+
+            contactForm.style.display = "block";
+            feedBackForm.style.display = "none";
+        })
     }
 
     // Function is called when the terms of service page is loaded
@@ -451,11 +809,53 @@
     }
 
 
-    function Start() {
+    async function Start() {
         console.log("Starting...");
         console.log(`Current document title is ${document.title}`);
-
         CheckLogin();
+
+        // Create switch statements that call different functions each time a different page is loaded
+        switch(document.title){
+            case "Home":
+                DisplayHomePage();
+                footer();
+                break;
+            case"About":
+                DisplayAboutPage();
+                footer();
+                break;
+            case"Contact":
+                DisplayContactPage();
+                footer();
+                break;
+            case"Events":
+                DisplayEventsPage();
+                break;
+            case"Opportunities":
+                DisplayOpportunitiesPage();
+                footer();
+                break;
+            case"Login":
+                DisplayLoginPage();
+                footer();
+                break;
+            case"Privacy Policy":
+                DisplayPrivacyPolicyPage();
+                footer();
+                break;
+            case"Terms of Services":
+                DisplayTermsOfServicePage();
+                footer();
+                break;
+            case"Gallery":
+                DisplayImages();
+                footer();
+                break;
+        }
+    }
+
+    // Create a function for adding the footer
+    function footer(){
         // Create a dynamic footer that has the terms of service and privacy policy page and it to the document
         let DocumentBody = document.body;
         let footer = document.createElement("footer");
@@ -467,41 +867,7 @@
         footer.innerHTML = footer1
         footer.innerHTML += footer2
         DocumentBody.appendChild(footer);
-
     }
-
-
-    // Create switch statements that call different functions each time a different page is loaded
-    switch(document.title){
-        case "Home":
-            DisplayHomePage();
-            break;
-        case"About":
-            DisplayAboutPage();
-            break;
-        case"Contact":
-            DisplayContactPage();
-            break;
-        case"Events":
-            DisplayEventsPage();
-            break;
-        case"Opportunities":
-            DisplayOpportunitiesPage();
-            break;
-        case"Login":
-            DisplayLoginPage();
-            break;
-        case"Privacy Policy":
-            DisplayPrivacyPolicyPage();
-            break;
-        case"Terms of Services":
-            DisplayTermsOfServicePage();
-            break;
-        case"Gallery":
-            DisplayImages();
-            break;
-    }
-
 
 
     window.addEventListener("DOMContentLoaded", ()=>{

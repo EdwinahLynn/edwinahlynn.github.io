@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./node_modules/@fortawesome/fontawesome-free/css/all.css">
     <link rel="stylesheet" href="content/style.css">
 </head>
-<body>
+<body class="bg-dark">
 <header>
     <nav class="navbar navbar-expand-lg" style="background-color: #bfa1fc">
         <div class="container-fluid">
@@ -53,7 +53,7 @@
         </div>
     </nav>
 </header>
-<div class="bg-dark text-white" >
+<div id="contactForm" class="bg-dark text-white" >
     <br><br>
     <h3 class="align-text-center bg-dark text-white">Contact us</h3>
     <p class="bg-dark text-white">
@@ -100,6 +100,56 @@
         <div class="font-weight-bold text-center text-bg-danger" id="message"></div>
         <br>
         <br>
+    </form>
+
+    <p class="align-text-center bg-dark text-white">
+        Have any feedback you want to give us? <button id="displayFeedBackForm" class="bg-primary text-white ">Click here</button> for the feedback form
+    </p>
+</div>
+
+
+<div id="feedBackForm" class="align-text-center bg-dark text-white" style="display: none">
+    <br><br>
+    <h3 class="align-text-center bg-dark text-white">Feed Back</h3>
+    <p class="bg-dark text-white">
+        Here at Volunteer Connect we value feedback from our customers and volunteers. We would love
+        to hear from you in regards to the experience you have had with us!
+    </p>
+
+    <h3 class="text-center bg-dark text-white">Feedback Form</h3>
+    <form class="bg-dark text-white" action="">
+        <div class="text-center">
+            <label for="firstName">First Name</label>
+            <input type="text" name="firstName" id="firstName" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="lastName">Last Name</label>
+            <input type="text" name="lastName" id="lastName" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="emailAddress">Email</label>
+            <input type="email" name="emailAddress" id="emailAddress" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="messageBox" >Drop your message</label><br><br>
+            <input class="form-control-lg" id="messageBox" required>
+
+            </input>
+        </div>
+        <br>
+        <div class="text-center">
+            <button class="btn btn-primary" id="submitFeedback" type="submit">Submit</button>
+        </div>
+        <br>
+        <div class="font-weight-bold text-center text-bg-danger" id="confirmation"></div>
+        <br>
+        <br>
+        <p class="align-text-center bg-dark text-white">
+            Do you have any issues, or would you like us to contact you <button id="displayContactForm" class="bg-primary text-white ">Click here</button> for the feedback form
+        </p>
 
     </form>
 </div>
