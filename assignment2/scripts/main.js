@@ -263,7 +263,7 @@
         if (userSession) {
 
             // Change the text in the header to logout
-            login.innerHTML = `<i class = "fas fa-sign-out-alt"></i> Logout`;
+            login.innerHTML = `<i class = "fas fa-sign-out-alt"></i>Logout`;
             login.href = "#";
 
             // Attach an eventlistener to the login link(now showing logout) in the header
@@ -272,6 +272,7 @@
 
                 // Remove the user from the session and return to the login page
                 sessionStorage.removeItem("user");
+                login.innerHTML = `<i class = "fas fa-sign-out-alt"></i>Login`;
                 location.href = "login.html";
             })
         }
