@@ -325,7 +325,7 @@
                 }
 
                 // If there was a match from the array
-                if (success) {
+                if (isMatch) {
 
                     // Using the key word user, place the user into that session
                     sessionStorage.setItem("user", JSON.stringify({
