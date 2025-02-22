@@ -64,7 +64,7 @@
             }
 
             // Send a request to the information.json file and throw an error is the response isn't ok
-            const response = await fetch("/data/information.json");
+            const response = await fetch("data/information.json");
             if (!response.ok) {
                 throw new Error(`HTTP error: ${response.status}`);
             }
@@ -108,7 +108,7 @@
         console.log("LoadEvents Date");
         try {
             // Send a request to the information.json file and throw an error if the response isn't ok
-            const response = await fetch("/data/information.json");
+            const response = await fetch("data/information.json");
             if (!response.ok) {
                 throw new Error(`HTTP error: ${response.status}`);
             }
@@ -182,7 +182,7 @@
         try {
 
             // Send a request to the information.json file and throw an error if the response isn't ok
-            const response = await fetch("/data/information.json");
+            const response = await fetch("data/information.json");
             if (!response.ok) {
                 throw new Error(`HTTP error: ${response.status}`);
             }
@@ -293,7 +293,7 @@
             try {
 
                 // Send a request to the users.json file in the data folder
-                const response = await fetch("/data/users.json");
+                const response = await fetch("data/users.json");
 
                 // Display an error message if the response is not ok
                 if (!response.ok) {
