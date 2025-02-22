@@ -12,7 +12,7 @@
 
 <header>
     <nav class="navbar navbar-expand-lg" style="background-color: #bfa1fc">
-        <div class="container-fluid">
+        <div id="hasLinks"  class="container-fluid">
             <div>
                 <a class="nav-link" href="index.html">Home</a>
             </div>
@@ -45,12 +45,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="login.html">Login</a>
                     </li>
-                    <form class="search d-flex" role="search">
-                        <input id="search" class="form-control me-2 align-items-end" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-
                 </ul>
+                <form class="search d-flex" role="search">
+                    <input id="search" class="form-control me-2 align-items-end" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit" id="searchButton">Search</button>
+                </form>
             </div>
         </div>
     </nav>
