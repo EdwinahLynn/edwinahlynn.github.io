@@ -362,7 +362,7 @@
             let imageItems = document.querySelector(".carousel-inner");
 
             // Send a request to the images.json file that has the images
-            const response = await fetch("/data/images.json");
+            const response = await fetch("data/images.json");
 
             // Display an error message if the response is not ok
             if (!response.ok){
@@ -403,7 +403,6 @@
         catch(error){
             console.error("Error in DisplayImages:", error);
         }
-
     }
 
     // Create a function to display news on the main page
