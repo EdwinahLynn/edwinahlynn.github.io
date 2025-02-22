@@ -3,12 +3,12 @@
   [
     {
       "Title": "Tree Planting",
-      "src": "https://edwinahlynn.github.io/assignment2/photos/volunteer.jpg",
+      "src": "/assignment2/photos/volunteer.jpg",
       "alt": "volunteers planting trees"
     },
     {
       "Title": "Garbage Collection",
-      "src": "https://edwinahlynn.github.io/assignment2/photos/volunteer2.jpg",
+      "src": "/assignment2/photos/volunteer2.jpg",
       "alt": "Collecting rubbish as a team"
     }
   ]
