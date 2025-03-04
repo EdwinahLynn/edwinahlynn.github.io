@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Tags</title>
+    <title>Register</title>
 </head>
 <body>
 <div>
@@ -25,20 +25,24 @@
 
     <div>
       <label for="number">Phone number</label>
-      <input type="text" name="number" id="number">><br><br>
+      <input type="text" name="number" id="number"><br><br>
     </div>
     <div>
       <label for="sDate">Start Date</label>
-      <input type="date" name="sDate" id="sDate" required>><br><br>
+      <input type="date" name="sDate" id="sDate" required><br><br>
     </div>
     <div>
       <label for="eDate">End Date</label>
       <input type="date" name="eDate" id="eDate" required><br><br>
     </div>
     <div>
-      <label>Police check</label>
-      <input type="radio" name="pCheck" value="Yes">Yes<label></label><br>
-      <input type="radio" name="pCheck" value="No">No<label></label><br>
+      <label>Police check</label><br>
+      <div id="forRadioButtons">
+        <input type="radio" name="pCheck" id="policeCheck" value="Yes" checked>
+        <label for="policeCheck" >Yes</label><br>
+        <input type="radio" name="pCheck" id="noPoliceCheck" value="No">
+        <label for="noPoliceCheck" >No</label><br>
+      </div>
     </div>
     <div>
       <label for="dApplied">Date Applied</label>
@@ -50,7 +54,7 @@
     </div>
     <br>
     <div class="text-center">
-      <button class="btn btn-primary" id="submitFeedback" type="submit">Submit</button>
+      <button class="btn btn-primary" id="submit" type="submit">Submit</button>
     </div>
   </form>
 </div>
