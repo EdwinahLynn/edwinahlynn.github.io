@@ -606,6 +606,7 @@ const router = new Router(routes);
     });
 
     function handlePageLogic(path){
+        AuthGuard();
 
         //Update Page Title
         document.title = pageTitles[path] || "Untitled Page";
@@ -656,6 +657,7 @@ const router = new Router(routes);
 
     async function Start()
     {
+        AuthGuard();
         console.log("Starting...");
         console.log(`Current document title is ${document.title}`);
 
