@@ -91,7 +91,7 @@
             try{
 
                 // The await keyword tells JavaScript to pause here (thread) until the fetch request
-                const response = await fetch("data/user.json");
+                const response = await fetch("ice3/data/user.json");
 
                 if (!response.ok){
                     throw new Error(`HTTP error: ${response.status}`);
