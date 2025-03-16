@@ -20,9 +20,9 @@ document.addEventListener("keypress", resetSessionTimeout);
 
 export function AuthGuard(){
     const user = sessionStorage.getItem("user");
-    const protectedRoutes = ["/contact-list", "/edit"];
+    const protectedRoutes = ["/contact-list", "/edit", "/services", "/products", "/home", "/about", "/contact", "/"];
 
-    if(!user){
+    if(!user && protectedRoutes.includes(location.hash.slice(1))){
         console.log("[AUTHGUARD] Unauthorized access detected. Redirecting to login page");
         window.dispatchEvent(new CustomEvent("sessionExpired"));
         router.navigate("/login");
