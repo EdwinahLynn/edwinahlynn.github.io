@@ -3,13 +3,183 @@
 // Date: 25th/01/2024
 
 "use strict";
+import {Header} from "./header.js";
+import {Router} from "./router.js";
+import {AuthGuard} from "./authguard.js";
+import {Footer} from "./footer.js";
+
+
+const pageTitles = {
+    "/": "Home",
+    "/home": "Home",
+    "/about": "About",
+    "/contact": "Contact Us",
+    "/eventplanning":"eventplanning",
+    "/events": "Events",
+    "/gallery": "Gallery",
+    "/login": "Login Page",
+    "/opportunities": "Opportunities",
+    "/privacypolicy": "Privacy Policy",
+    "/statistics": "Statistics",
+    "/termsofservice": "Terms of Service",
+    "/404": "Page Not Found"
+};
+
+const routes = {
+    "/": "views/content/home.html",
+    "/home": "views/content/home.html",
+    "/about": "views/content/about.html",
+    "/contact": "views/content/contact.html",
+    "/eventplanning": "views/content/eventplanning.html",
+    "/events": "views/content/events.html",
+    "/gallery": "views/content/gallery.html",
+    "/login": "views/content/login.html",
+    "/opportunities": "views/content/opportunities.html",
+    "/privacypolicy": "./views/content/privacypolicy.html",
+    "/statistics": "views/content/statistics.html",
+    "/termsofservice": "views/content/termsofservice/",
+    "/404": "views/content/404.html",
+};
+
+export const router = new Router(routes);
 
 // IIFE - Immediately Invoked Functional Expression
-
 (function () {
+
+    async function DisplayEventPlanningPage(){
+        console.log("Calling DisplayEventPlanningPage");
+        let mainTag = document.getElementById("forNewEvents");
+        let eventsTag = document.createElement("div");
+
+        // Empty the div tag if it's not empty
+        if (mainTag.innerHTML !== "") {
+            mainTag.innerHTML = "";
+        }
+        console.log("LoadEvents Date");
+        try {
+
+            // Send a request to the information.json file and throw an error if the response isn't ok
+            const response = await fetch("../data/information.json");
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+
+            // Assign the json response and property to a variable
+            const jsonData = await response.json();
+            const events = jsonData.info;
+
+            // Display and error message if the variable is not an array
+            if (!Array.isArray(events)) {
+                throw new Error("[ERROR] Json data does not contain a valid array")
+            }
+
+            // Create a loop to access each element in the json file
+            events.forEach(event => {
+                console.log("in the loop");
+
+                // Create paragraph tags fof the information in the json file
+                let eventName = document.createElement("p");
+                let eventDescription = document.createElement("p");
+                let eventDateTime = document.createElement("p");
+                let location = document.createElement("p");
+                eventDateTime.style.marginBottom = "50px";
+
+                // Assign attributes and text content to the paragraph tags
+                location.setAttribute("class", "fw-bold");
+                eventName.textContent = event.Name;
+                eventDescription.textContent = event.Description;
+                console.log(event.Description);
+                eventDateTime.textContent = `${event.Date}     ${event.Time}`;
+                location.textContent = event.Location;
+
+                // Add the paragpraph tags to the div tag
+                eventsTag.appendChild(location);
+                eventsTag.appendChild(eventName);
+                eventsTag.appendChild(eventDescription);
+                eventsTag.appendChild(eventDateTime);
+
+                mainTag.appendChild(eventsTag);
+            });
+
+            let submitEventButton = document.getElementById("submitEvent");
+            submitEventButton.addEventListener("click", (event) => {
+                event.preventDefault();
+                let eventName = document.getElementById("eName").value;
+                let eventDate = document.getElementById("eDate").value;
+                let eventDescription = document.getElementById("eDescription").value;
+                let location = document.getElementById("eLocation").value;
+                let eventTime = document.getElementById("eTime").value;
+
+                let data = {
+                    "Name": eventName,
+                    "Description": eventDescription,
+                    "Date": eventDate,
+                    "Time": eventTime,
+                    "Location": location,
+                }
+
+
+
+            });
+        }
+            // Display an error message if there is an error in the try block
+        catch (error) {
+            console.error("Error fetching events data", error);
+            let errorMessage = document.getElementById("eventsDisplay");
+            errorMessage.textContent = "Unable to load events based on Location. Please try again later"
+        }
+    }
+
+    // Added a function to display charts on the statistic page
+    async function DisplayStatistics() {
+        console.log("Display StatisticsPage");
+        const response = await fetch("data/statistics.json");
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        // Assign the json response to a variable
+        const jsonData = await response.json();
+        const statistics = jsonData.stats;
+        console.log("here");
+        console.log(statistics);
+
+        const values = [];
+        const labels = [];
+
+        statistics.forEach((statistic) => {
+            labels.push(statistic.month);
+            values.push(parseInt(statistic.visitors, 10));
+        });
+        console.log(labels);
+        console.log(values);
+
+        new Chart("barChart", {
+            type: "bar",
+            data: {
+                labels:labels,
+                datasets: [{
+                    data:values}
+                ]
+            }
+        });
+        new Chart("pieChart", {
+            type: "pie",
+            data: {
+                labels:labels,
+                datasets: [{
+                    data:values}
+                ]
+            }
+        });
+
+        //Following code was referenced from;
+            //Chart.js. w3schools. https://www.w3schools.com/js/js_graphics_chartjs.asp
+    }
 
     // Create a function for loading events based on the event type
     async function LoadEventsType() {
+        console.log("In EventsType...");
 
         // Check to see if the div tag is empty
         let divTag = document.getElementById("eventsDisplay");
@@ -22,12 +192,12 @@
 
         try {
             // Create a function to load the first event type(workshops) in the json file
-            async function eventTypes(eventName, events) {
+            async function eventTypes(eventTitle, events) {
 
                 // Create a heading tag and add it to the body
                 let body = document.body;
                 let heading = document.createElement("h2");
-                heading.textContent = eventName;
+                heading.textContent = eventTitle;
                 divTag.appendChild(heading);
 
 
@@ -55,11 +225,6 @@
                     divTag.appendChild(eventDescription);
                     divTag.appendChild(eventDateTime);
                     divTag.appendChild(location);
-
-
-                    // Insert the div tag with all its content before the radio buttons in the body
-                    let form = document.getElementById("forButtons");
-                    body.insertBefore(divTag, form);
                 })
             }
 
@@ -91,24 +256,24 @@
             let errorMessage = document.getElementById("errorMessage");
             errorMessage.textContent = "Error: Cannot display this information now. Try again later";
         }
-        // Call the footer function
-        footer();
     }
 
     // Create a function for loading events based on the date of the event
     async function LoadEventsDate() {
 
         // Check to see if the div tag is empty
-        let divTag = document.getElementById("eventsDisplay");
+        let mainDivTag = document.getElementById("eventsDisplay");
 
         // Empty the div tag if it's not empty
-        if (divTag.innerHTML !== "") {
-            divTag.innerHTML = "";
+        if (mainDivTag.innerHTML !== "") {
+            mainDivTag.innerHTML = "";
         }
+        console.log("LoadEvents Info");
+
         console.log("LoadEvents Date");
         try {
             // Send a request to the information.json file and throw an error if the response isn't ok
-            const response = await fetch("data/information.json");
+            const response = await fetch("../data/information.json");
             if (!response.ok) {
                 throw new Error(`HTTP error: ${response.status}`);
             }
@@ -126,7 +291,7 @@
             let body = document.body;
             let heading = document.createElement("h2");
             heading.textContent = "Events based on Time";
-            divTag.appendChild(heading);
+            mainDivTag.appendChild(heading);
 
             // Create a loop to access each element in the json file
             events.forEach(event => {
@@ -147,15 +312,14 @@
                 location.textContent = event.Location;
 
                 // Add the paragraph tags to the div tag
-                divTag.appendChild(eventDateTime);
-                divTag.appendChild(eventName);
-                divTag.appendChild(eventDescription);
-                divTag.appendChild(location);
+                mainDivTag.appendChild(eventDateTime);
+                mainDivTag.appendChild(eventName);
+                mainDivTag.appendChild(eventDescription);
+                mainDivTag.appendChild(location);
 
-                // Insert the div tag before the radio buttons
-                let form = document.getElementById("forButtons");
-                body.insertBefore(divTag, form);
-            })
+
+            });
+
         }
             // Display an error message if there is an error in the try block
         catch (error) {
@@ -164,8 +328,6 @@
             errorMessage.textContent = "Unable to load events based on the date. Please try again later";
         }
 
-        // Call the footer function
-        footer();
     }
 
     // Create a function for loading events based on the location for the event
@@ -227,9 +389,6 @@
                 divTag.appendChild(eventDescription);
                 divTag.appendChild(eventDateTime);
 
-                // Insert the div tag before the radio buttons
-                let form = document.getElementById("forButtons");
-                body.insertBefore(divTag, form);
             })
         }
             // Display an error message if there is an error in the try block
@@ -239,49 +398,15 @@
             errorMessage.textContent = "Unable to load events based on Location. Please try again later"
         }
         // Call the footer function
-        footer();
     }
 
 
     // Create a function to check if a user is logged in
-    function CheckLogin() {
-        console.log("[INFO] Checking user login status..");
 
-        // Get the element that holds the login tet in the header
-        const login = document.getElementById("login");
-
-        // Display an error message if the login element isn't found
-        if (!login) {
-            console.warn("[WARNING] LoginNav element not found! Skipping CheckLogin().");
-            return;
-        }
-
-        // Get the value that is stored in the session under the key user
-        const userSession = sessionStorage.getItem("user");
-
-        // If there is a value, it means there is a user in the session
-        if (userSession) {
-
-            // Change the text in the header to logout
-            login.innerHTML = `<i class = "fas fa-sign-out-alt"></i>Logout`;
-            login.href = "#";
-
-            // Attach an eventlistener to the login link(now showing logout) in the header
-            login.addEventListener("click", (event) => {
-                event.preventDefault();
-
-                // Remove the user from the session and return to the login page
-                sessionStorage.removeItem("user");
-                login.innerHTML = `<i class = "fas fa-sign-out-alt"></i>Login`;
-                location.href = "login.html";
-            })
-        }
-
-    }
 
     // Create a function for the login page
     function DisplayLoginPage() {
-
+        console.log("Loading login page");
         // Get the login button and attach an event listener to it
         let loginButton = document.getElementById("loginButton");
         loginButton.addEventListener("click", async (event) => {
@@ -335,7 +460,9 @@
                     }));
 
                     // Redirect to the main page
-                    location.href = "index.html"
+                    Header().then(() =>{
+                        router.navigate("/home");
+                    });
                 }
 
                 // If there were no matched from the array, display error messages
@@ -398,6 +525,8 @@
                 if (images.indexOf(image) === 0) {
                     divTag.classList.add("active");
                 }
+                console.log(image.alt);
+                console.log(image.src);
             })
         }
             // Display an error message if there is an error in the try block
@@ -484,6 +613,7 @@
         console.log("Calling AboutUsPage()...");
     }
 
+    //document.addEventListener("DOMContentLoaded", DisplayOpportunitiesPage);
     // This function is called when the opportunities page loads
     function DisplayOpportunitiesPage() {
 
@@ -549,7 +679,8 @@
         ]
 
         // Creating html elements for the opportunity card
-        let DocumentBody = document.body;
+        //let DocumentBody = document.body;
+        let divTag = document.getElementById("forOpportunities")
         let mainDiv = document.createElement("div");
         mainDiv.setAttribute("class", "container-fluid");
 
@@ -627,12 +758,13 @@
         }
         // Adds all the cards in the main div to the html body
         mainDiv.appendChild(divTag1);
-        DocumentBody.appendChild(mainDiv);
+        divTag.appendChild(mainDiv);
 
     }
 
+    //document.addEventListener("DOMContentLoaded", DisplayEventsPage);
     // A function that is called when the Events page is loaded
-    function DisplayEventsPage() {
+    async function DisplayEventsPage() {
         console.log("Calling DisplayEventsPage()...");
 
         // Getting the checkboxes
@@ -648,7 +780,7 @@
         calendarCheckBx.addEventListener("click", function () {
             // Reload the page if the calendar check box is checked
             if (calendarCheckBx.checked) {
-                location.href = "./events.html";
+                router.navigate("/events");
             }
             // Hide the calendar and display the content for events when the events checkbox is checked
             else {
@@ -658,21 +790,25 @@
 
         });
         // Attach an even listener to the events check box
-        eventsCheckBx.addEventListener("click", function () {
-            console.log("evenst cheh box clikced");
-            LoadEventsType();
+        eventsCheckBx.addEventListener("click", async function (event) {
+            try {
+                console.log("Date checkbox clicked");
+                await LoadEventsType();
+                calendar.style.display = "none";
+            } catch (error) {
+                console.error("Error in LoadDate:", error);
+            }
+        });
+
+        dateCheckBx.addEventListener("click", async function() {
+            console.log("date check box clicked");
+            await LoadEventsDate();
             calendar.style.display = "none";
         });
 
-        dateCheckBx.addEventListener("click", function () {
+        locationCheckBx.addEventListener("click", async function () {
             console.log("date check box clikced");
-            LoadEventsDate();
-            calendar.style.display = "none";
-        });
-
-        locationCheckBx.addEventListener("click", function () {
-            console.log("date check box clikced");
-            LoadEventsLocation();
+            await LoadEventsLocation();
             calendar.style.display = "none";
         })
 
@@ -816,130 +952,72 @@
 
 
     async function Start() {
+        AuthGuard();
         console.log("Starting...");
         console.log(`Current document title is ${document.title}`);
 
-        // Call the login function
-        CheckLogin();
+        await Header();
+        const currentPath =location.hash.slice(1) || "/";
+        router.loadRoute(currentPath);
+        await Footer();
+        AuthGuard();
 
-        // Get obtain the div container and get the links inside it plus the search bar
-        let searchBox = document.getElementById("search");
-        let divContainer = document.getElementById("hasLinks");
-        let links = divContainer.getElementsByTagName("a");
 
-        // Filter
-        // Attach an event listener for the search box everytime a letter is pressed
-        searchBox.addEventListener("keyup", function () {
-            // Change the value type in the box to lower case letters
-            let searchBoxValue = searchBox.value.toLowerCase();
+    }
 
-            // Loop through all link items
-            for (let i = 0; i < links.length; i++) {
+    document.addEventListener("routeLoaded", (event) => {
+        const newPath = event.detail; // extract the route from the event passed
+        console.log(`[INFO] Route Loaded: ${newPath}`);
 
-                // Get the text in each link
-                let text = links[i].innerHTML;
-
-                // convert the text to lower cases letters and see if the entered text matches the link texts
-                if (text.toLowerCase().indexOf(searchBoxValue) > -1) {
-
-                    // Assign the link texts to the placeholder attribute(search box value)
-                    searchBox.placeholder = links[i].innerHTML;
-                }
-                // If the texts don't match, don't display a value
-                else {
-                    searchBox.placeholder = "";
-                }
-            }
+        Header().then(() => {
+            handlePageLogic(newPath);
         });
-        // The above filter idea is referenced from :
-            //  How TO - Search Menu .W3schools. https://www.w3schools.com/howto/howto_js_search_menu.asp
+        AuthGuard();
+    });
 
-        // Attach an event listener to the search button when its clicked
-        let searchButton = document.getElementById("searchButton");
-        searchButton.addEventListener("click", function (event) {
-
-            // Prevent the default behavior
-            event.preventDefault();
-
-            // Get the div container and all links in it, plus the search bar
-            let divContainer = document.getElementById("hasLinks");
-            let links = divContainer.getElementsByTagName("a");
-            let searchBox = document.getElementById("search");
-
-            // Change the entered value to lower case letters
-            let searchBoxValue = searchBox.value.trim().toLowerCase();
-
-            // Loop through each link
-            for (let i = 0; i < links.length; i++) {
-                // Convert the link texts to lower case letters
-                let text = links[i].innerText.toLowerCase();
-
-                // Check if the entered text matches the link text
-                if (searchBoxValue === text) {
-                    // If they match, go to that page
-                    location.href = links[i].href;
-                    return;
-                }
-            }
-        });
-
-    // Create switch statements that call different functions each time a different page is loaded
-        switch(document.title){
-            case "Home":
+    function handlePageLogic(path){
+        switch(path){
+            case "/":
                 DisplayHomePage();
-                footer();
                 break;
-            case"About":
+            case "/home":
+                DisplayHomePage();
+                break;
+            case"/about":
                 DisplayAboutPage();
-                footer();
                 break;
-            case"Contact":
+            case"/contact":
                 DisplayContactPage();
-                footer();
                 break;
-            case"Events":
+            case"/eventplanning":
+                DisplayEventPlanningPage();
+                break;
+            case"/events":
                 DisplayEventsPage();
                 break;
-            case"Opportunities":
+            case"/opportunities":
                 DisplayOpportunitiesPage();
-                footer();
                 break;
-            case"Login":
+            case"/login":
                 DisplayLoginPage();
-                footer();
                 break;
-            case"Privacy Policy":
+            case"/privacypolicy":
                 DisplayPrivacyPolicyPage();
-                footer();
                 break;
-            case"Terms of Services":
+            case"/statistics":
+                DisplayStatistics();
+                break;
+            case"/termsofservice":
                 DisplayTermsOfServicePage();
-                footer();
                 break;
-            case"Gallery":
+            case"/gallery":
                 DisplayImages();
-                footer();
                 break;
         }
     }
 
-    // Create a function for adding the footer
-    function footer(){
-        // Create a dynamic footer that has the terms of service and privacy policy page and it to the document
-        let DocumentBody = document.body;
-        let footer = document.createElement("footer");
-        footer.setAttribute("class", "bg-dark text-center py-3");
-
-
-        let footer1= `<a class="text-secondary" href="./privacypolicy.html">Privacy Policy</a><br>`;
-        let footer2= `<a class="text-secondary" href="./termsofservice.html">Terms of Service</a>`;
-        footer.innerHTML = footer1
-        footer.innerHTML += footer2
-        DocumentBody.appendChild(footer);
-    }
-
-
     window.addEventListener("DOMContentLoaded", ()=>{
+
         console.log("DOM fully loaded and parsed");
         Start();
     });

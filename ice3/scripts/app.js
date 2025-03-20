@@ -663,7 +663,6 @@ const router = new Router(routes);
 
         await LoadHeader();
         await LoadFooter();
-        AuthGuard();
 
         const currentPath =location.hash.slice(1) || "/";
         router.loadRoute(currentPath);

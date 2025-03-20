@@ -1,0 +1,21 @@
+{
+  "stats":
+  [
+    {
+      "month": "January",
+      "visitors": "10"
+    },
+    {
+      "month": "February",
+      "visitors": "100"
+    },
+    {
+      "month": "March",
+      "visitors": "500"
+    },
+    {
+      "month": "April",
+      "visitors": "200"
+    }
+  ]
+}
