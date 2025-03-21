@@ -71,7 +71,7 @@ export const router = new Router(routes);
                                     <p> Event Date : ${event.eventDate}</p>
                                     <p> Event Time : ${event.eventTime}</p>
                                     <p> Event Location: ${event.eventLocation}</p>
-                                     <button value="${key}" class="btn btn-danger btn-sm delete">
+                                     <button value="${key}" class="btn btn-danger btn-sm deleteEvent">
                                         <i class="fa-solid fa-trash"></i> Delete</i>
                                      </button>
                                     <br><br>
@@ -89,32 +89,37 @@ export const router = new Router(routes);
                 eventList.innerHTML = eventInformation;
             }
         }
-        const deleteButtons = document.querySelectorAll("button.delete");
+        const deleteButtons = document.querySelectorAll("button.deleteEvent");
         deleteButtons.forEach( (button) => {
-            button.addEventListener("click",function () {
-                if (confirm("Delete event, please confirm?")) {
+            button.addEventListener("click",function (event) {
+                event.preventDefault();
+                if (confirm("Do you want to delete this event?")) {
                     localStorage.removeItem(this.value);
+                    DisplayEventsFromStorage();
                 }
             });
         });
     }
-    async function DisplayEventPlanningPage(){
+    function DisplayEventPlanningPage(){
 
             let submitEventButton = document.getElementById("submitEvent");
+
             submitEventButton.addEventListener("click", (event) => {
                 event.preventDefault();
-                let eventName = document.getElementById("eName").value;
-                let eventDate = document.getElementById("eDate").value;
-                let eventDescription = document.getElementById("eDescription").value;
-                let eventLocation = document.getElementById("eLocation").value;
-                let eventTime = document.getElementById("eTime").value;
-                eventTime = parseInt(eventTime);
+                let eventName = document.getElementById("eName");
+                let eventDate = document.getElementById("eDate");
+                let eventDescription = document.getElementById("eDescription");
+                let eventLocation = document.getElementById("eLocation");
+                let eventTime = document.getElementById("eTime");
 
-                let newEvent = new core.NewEvent(eventName, eventDescription, eventDate, eventTime, eventLocation);
+                let newEvent = new core.NewEvent(eventName.value, eventDescription.value, eventDate.value,
+                    parseInt(eventTime.value), eventLocation.value);
                 if(newEvent.serialize()){
                     // Primary key for a contact --> contact_ + date & time
                     let key =`event_${Date.now()}`;
                     localStorage.setItem(key, newEvent.serialize());
+                    alert("The information about your event has been submitted");
+                    DisplayEventsFromStorage();
                     eventTime.value = "";
                     eventDescription.value = "";
                     eventName.value = "";

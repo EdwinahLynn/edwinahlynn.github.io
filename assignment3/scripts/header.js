@@ -127,6 +127,9 @@ function CheckLogin() {
         let eventsPlanningNavLink  = document.getElementById("planning");
         statisticsNavLink.style.display= "block";
         eventsPlanningNavLink.style.display = "block";
+        let message = document.getElementById("welcomeMessage");
+        let user = JSON.parse(userSession);
+        message.innerText = `Welcome back ${user.Username} !`;
     }
     else{
         login.innerHTML = `<i class = "fas fa-sign-out-alt"></i> Login`;
