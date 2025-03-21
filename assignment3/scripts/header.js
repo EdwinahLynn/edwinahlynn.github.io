@@ -120,13 +120,21 @@ function CheckLogin() {
     if(userSession){
         login.innerHTML = `<i class = "fas fa-sign-out-alt"></i> Logout`;
         login.href = "#";
+
         //login.removeEventListener("click", handleLogout);
         login.addEventListener("click", handleLogout);
+        let statisticsNavLink = document.getElementById("stat");
+        let eventsPlanningNavLink  = document.getElementById("planning");
+        statisticsNavLink.style.display= "block";
+        eventsPlanningNavLink.style.display = "block";
     }
     else{
         login.innerHTML = `<i class = "fas fa-sign-out-alt"></i> Login`;
         login.removeEventListener("click", handleLogout);
-        //login.addEventListener("click", () => location.href = "/login");
+        let statisticsNavLink = document.getElementById("stat");
+        let eventsPlanningNavLink  = document.getElementById("planning");
+        statisticsNavLink.style.display = "none";
+        eventsPlanningNavLink.style.display = "none";
     }
 }
 

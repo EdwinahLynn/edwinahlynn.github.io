@@ -3,7 +3,7 @@
   [
     {
       "month": "January",
-      "visitors": "10"
+      "visitors": "70"
     },
     {
       "month": "February",
@@ -11,11 +11,43 @@
     },
     {
       "month": "March",
-      "visitors": "500"
+      "visitors": "90"
     },
     {
       "month": "April",
+      "visitors": "150"
+    },
+    {
+      "month": "May",
+      "visitors": "100"
+    },
+    {
+    "month": "June",
+    "visitors": "190"
+    },
+    {
+      "month": "July",
       "visitors": "200"
+    },
+    {
+      "month": "August",
+      "visitors": "150"
+    },
+    {
+      "month": "September",
+      "visitors": "100"
+    },
+    {
+      "month": "October",
+      "visitors": "180"
+    },
+    {
+      "month": "November",
+      "visitors": "90"
+    },
+    {
+      "month": "December",
+      "visitors": "100"
     }
   ]
 }

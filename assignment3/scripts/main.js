@@ -8,7 +8,6 @@ import {Router} from "./router.js";
 import {AuthGuard} from "./authguard.js";
 import {Footer} from "./footer.js";
 
-
 const pageTitles = {
     "/": "Home",
     "/home": "Home",
@@ -46,60 +45,60 @@ export const router = new Router(routes);
 // IIFE - Immediately Invoked Functional Expression
 (function () {
 
-    async function DisplayEventPlanningPage(){
-        console.log("Calling DisplayEventPlanningPage");
-        let mainTag = document.getElementById("forNewEvents");
-        let eventsTag = document.createElement("div");
+    function DisplayEventsFromStorage() {
+        console.log("Displaying Events from Storage....");
+        if (localStorage.length > 0){
+            let eventList = document.getElementById("forDisplayingEvents");
+            let eventInformation = "";
 
-        // Empty the div tag if it's not empty
-        if (mainTag.innerHTML !== "") {
-            mainTag.innerHTML = "";
+            let keys = Object.keys(localStorage);
+            console.log(keys);
+
+            let index = 1;
+            for (const key of keys){
+                if(key.startsWith("event_")){
+                    let eventData = localStorage.getItem(key);
+
+                    try {
+                        console.log(eventData);
+                        let event = new core.NewEvent();
+                        event.deserialize(eventData);
+
+                        eventInformation += `
+    
+                                    <strong> Event Name : ${event.eventName}</strong>
+                                    <p> Event Description : ${event.eventDescription}</p>
+                                    <p> Event Date : ${event.eventDate}</p>
+                                    <p> Event Time : ${event.eventTime}</p>
+                                    <p> Event Location: ${event.eventLocation}</p>
+                                     <button value="${key}" class="btn btn-danger btn-sm delete">
+                                        <i class="fa-solid fa-trash"></i> Delete</i>
+                                     </button>
+                                    <br><br>
+                                    `;
+                        index++;
+                    }
+                    catch(error){
+                        console.log(error)
+                    }
+
+                }
+                else{
+                    console.log("No keys found");
+                }
+                eventList.innerHTML = eventInformation;
+            }
         }
-        console.log("LoadEvents Date");
-        try {
-
-            // Send a request to the information.json file and throw an error if the response isn't ok
-            const response = await fetch("../data/information.json");
-            if (!response.ok) {
-                throw new Error(`HTTP error: ${response.status}`);
-            }
-
-            // Assign the json response and property to a variable
-            const jsonData = await response.json();
-            const events = jsonData.info;
-
-            // Display and error message if the variable is not an array
-            if (!Array.isArray(events)) {
-                throw new Error("[ERROR] Json data does not contain a valid array")
-            }
-
-            // Create a loop to access each element in the json file
-            events.forEach(event => {
-                console.log("in the loop");
-
-                // Create paragraph tags fof the information in the json file
-                let eventName = document.createElement("p");
-                let eventDescription = document.createElement("p");
-                let eventDateTime = document.createElement("p");
-                let location = document.createElement("p");
-                eventDateTime.style.marginBottom = "50px";
-
-                // Assign attributes and text content to the paragraph tags
-                location.setAttribute("class", "fw-bold");
-                eventName.textContent = event.Name;
-                eventDescription.textContent = event.Description;
-                console.log(event.Description);
-                eventDateTime.textContent = `${event.Date}     ${event.Time}`;
-                location.textContent = event.Location;
-
-                // Add the paragpraph tags to the div tag
-                eventsTag.appendChild(location);
-                eventsTag.appendChild(eventName);
-                eventsTag.appendChild(eventDescription);
-                eventsTag.appendChild(eventDateTime);
-
-                mainTag.appendChild(eventsTag);
+        const deleteButtons = document.querySelectorAll("button.delete");
+        deleteButtons.forEach( (button) => {
+            button.addEventListener("click",function () {
+                if (confirm("Delete event, please confirm?")) {
+                    localStorage.removeItem(this.value);
+                }
             });
+        });
+    }
+    async function DisplayEventPlanningPage(){
 
             let submitEventButton = document.getElementById("submitEvent");
             submitEventButton.addEventListener("click", (event) => {
@@ -107,27 +106,28 @@ export const router = new Router(routes);
                 let eventName = document.getElementById("eName").value;
                 let eventDate = document.getElementById("eDate").value;
                 let eventDescription = document.getElementById("eDescription").value;
-                let location = document.getElementById("eLocation").value;
+                let eventLocation = document.getElementById("eLocation").value;
                 let eventTime = document.getElementById("eTime").value;
+                eventTime = parseInt(eventTime);
 
-                let data = {
-                    "Name": eventName,
-                    "Description": eventDescription,
-                    "Date": eventDate,
-                    "Time": eventTime,
-                    "Location": location,
+                let newEvent = new core.NewEvent(eventName, eventDescription, eventDate, eventTime, eventLocation);
+                if(newEvent.serialize()){
+                    // Primary key for a contact --> contact_ + date & time
+                    let key =`event_${Date.now()}`;
+                    localStorage.setItem(key, newEvent.serialize());
+                    eventTime.value = "";
+                    eventDescription.value = "";
+                    eventName.value = "";
+                    eventDate.value = "";
+                    eventLocation.value = "";
+                    router.navigate("/eventplanning");
+                }
+                else{
+                    console.error("[ERROR] Event serialization failed");
                 }
 
-
-
             });
-        }
-            // Display an error message if there is an error in the try block
-        catch (error) {
-            console.error("Error fetching events data", error);
-            let errorMessage = document.getElementById("eventsDisplay");
-            errorMessage.textContent = "Unable to load events based on Location. Please try again later"
-        }
+
     }
 
     // Added a function to display charts on the statistic page
@@ -146,6 +146,8 @@ export const router = new Router(routes);
 
         const values = [];
         const labels = [];
+        const colours = ["blue", "green","purple","pink","yellow", "brown", "black","grey", "orange", "indigo",
+        "gold", "silver"];
 
         statistics.forEach((statistic) => {
             labels.push(statistic.month);
@@ -159,6 +161,7 @@ export const router = new Router(routes);
             data: {
                 labels:labels,
                 datasets: [{
+                    backgroundColor: colours,
                     data:values}
                 ]
             }
@@ -168,6 +171,7 @@ export const router = new Router(routes);
             data: {
                 labels:labels,
                 datasets: [{
+                    backgroundColor: colours,
                     data:values}
                 ]
             }
@@ -991,6 +995,7 @@ export const router = new Router(routes);
                 break;
             case"/eventplanning":
                 DisplayEventPlanningPage();
+                DisplayEventsFromStorage();
                 break;
             case"/events":
                 DisplayEventsPage();
