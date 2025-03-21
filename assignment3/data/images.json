@@ -3,17 +3,17 @@
   [
     {
       "Title": "Tree Planting",
-      "src": "../content/volunteer.jpg",
+      "src": "/assignment3/content/volunteer.jpg",
       "alt": "volunteers planting trees"
     },
     {
       "Title": "Garbage Collection",
-      "src": "content/volunteer2.jpg",
+      "src": "/assignment3/content/volunteer2.jpg",
       "alt": "Collecting rubbish as a team"
     },
     {
       "Title": "Green Day",
-      "src": "content/volunteer3.jpeg",
+      "src": "/assignment3/content/volunteer3.jpeg",
       "alt": "Cleaning the forest and garden"
     }
   ]
