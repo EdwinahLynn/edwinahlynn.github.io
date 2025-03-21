@@ -282,7 +282,7 @@ export const router = new Router(routes);
         console.log("LoadEvents Date");
         try {
             // Send a request to the information.json file and throw an error if the response isn't ok
-            const response = await fetch("../data/information.json");
+            const response = await fetch("data/information.json");
             if (!response.ok) {
                 throw new Error(`HTTP error: ${response.status}`);
             }
