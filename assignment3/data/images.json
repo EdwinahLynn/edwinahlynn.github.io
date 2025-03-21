@@ -8,12 +8,12 @@
     },
     {
       "Title": "Garbage Collection",
-      "src": "../content/volunteer2.jpg",
+      "src": "content/volunteer2.jpg",
       "alt": "Collecting rubbish as a team"
     },
     {
       "Title": "Green Day",
-      "src": "../content/volunteer3.jpeg",
+      "src": "content/volunteer3.jpeg",
       "alt": "Cleaning the forest and garden"
     }
   ]
