@@ -36,8 +36,8 @@
          * @param eventName
          */
         set eventName(eventName) {
-            if (typeof eventName !== "string" || eventName.trim() === "") {
-                throw new Error("Invalid event Name: must be non-empty string");
+            if (eventName.trim() === "") {
+                throw new Error("Event Name must not be be empty");
             }
             this._eventName = eventName;
         }
@@ -56,14 +56,14 @@
          */
         set eventDescription(eventDescription) {
             if (eventDescription.trim() === "") {
-                throw new Error("Invalid Description: must not be empty");
+                throw new Error("Description must not be empty");
             }
             this._eventDescription = eventDescription;
         }
 
         /**
          * Gets the date of the event
-         * @returns {string}
+         * @returns {date}
          */
         get eventDate() {
             return this._eventDate;
@@ -75,14 +75,14 @@
          */
         set eventDate(eventDate) {
             if (eventDate.trim() === "") {
-                throw new Error("Invalid Date: must be non-empty string");
+                throw new Error("Date must not be empty");
             }
             this._eventNDate = eventDate;
         }
 
         /**
          * Gets the time of the event
-         * @returns {number}
+         * @returns {time}
          */
         get eventTime() {
             return this._eventTime;
@@ -93,8 +93,8 @@
          * @param eventTime
          */
         set eventTime(eventTime) {
-            if (typeof eventTime == "string" || eventTime.trim() === "") {
-                throw new Error("Time cannot be empty or written as letters");
+            if (eventTime.trim() === "") {
+                throw new Error("Time cannot be empty letters");
             }
             this._eventTime = eventTime;
         }
@@ -129,7 +129,12 @@
          * @returns {string|null}
          */
         serialize() {
-            if (!this._eventName || !this._eventDescription || !this._eventDate || !this._eventTime||!this._eventLocation) {
+            console.log(this._eventName)
+            console.log(this._eventTime)
+            console.log(this._eventDescription)
+            console.log(this._eventDate)
+            console.log(this._eventLocation)
+            if (!this._eventName || !this._eventDescription || !this._eventDate || !this._eventTime || !this._eventLocation) {
                 console.error("One of more of the event fields are missing");
                 return null;
             }

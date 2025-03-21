@@ -54,7 +54,6 @@ export const router = new Router(routes);
             let keys = Object.keys(localStorage);
             console.log(keys);
 
-            let index = 1;
             for (const key of keys){
                 if(key.startsWith("event_")){
                     let eventData = localStorage.getItem(key);
@@ -76,12 +75,10 @@ export const router = new Router(routes);
                                      </button>
                                     <br><br>
                                     `;
-                        index++;
                     }
                     catch(error){
                         console.log(error)
                     }
-
                 }
                 else{
                     console.log("No keys found");
@@ -90,48 +87,53 @@ export const router = new Router(routes);
             }
         }
         const deleteButtons = document.querySelectorAll("button.deleteEvent");
+        let keys = Object.keys(localStorage);
         deleteButtons.forEach( (button) => {
             button.addEventListener("click",function (event) {
                 event.preventDefault();
-                if (confirm("Do you want to delete this event?")) {
-                    localStorage.removeItem(this.value);
-                    DisplayEventsFromStorage();
+                for (const key of keys){
+                    if (key === this.value) {  // Check if key matches button value
+                        if (confirm("Do you want to delete this event?")) {
+                            localStorage.removeItem(key);
+                            DisplayEventsFromStorage();  // Refresh event list
+                        }}
                 }
             });
         });
     }
     function DisplayEventPlanningPage(){
+        let submitEventButton = document.getElementById("submitEvent");
 
-            let submitEventButton = document.getElementById("submitEvent");
+        submitEventButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            console.log("Form submitted");
+            let eventName = document.getElementById("eName");
+            let eventDate = document.getElementById("eDate");
+            let eventDescription = document.getElementById("eDescription");
+            let eventLocation = document.getElementById("eLocation");
+            let eventTime = document.getElementById("eTime");
 
-            submitEventButton.addEventListener("click", (event) => {
-                event.preventDefault();
-                let eventName = document.getElementById("eName");
-                let eventDate = document.getElementById("eDate");
-                let eventDescription = document.getElementById("eDescription");
-                let eventLocation = document.getElementById("eLocation");
-                let eventTime = document.getElementById("eTime");
+            let newEvent = new core.NewEvent(eventName.value, eventDescription.value, eventDate.value,
+                eventTime.value, eventLocation.value);
+            if(newEvent.serialize()){
+                // Primary key for a contact --> contact_ + date & time
+                let key =`event_${Date.now()}`;
+                localStorage.setItem(key, newEvent.serialize());
+                DisplayEventsFromStorage();
+                let message = document.getElementById("messageSubmitted");
+                message.innerHTML = "Your form has been submitted";
+                eventTime = "";
+                eventDescription = "";
+                eventName = "";
+                eventDate  = "";
+                eventLocation = "";
+            }
+            else{
+                console.error("[ERROR] Event serialization failed");
+                alert("All fields are required to be filled");
+            }
 
-                let newEvent = new core.NewEvent(eventName.value, eventDescription.value, eventDate.value,
-                    parseInt(eventTime.value), eventLocation.value);
-                if(newEvent.serialize()){
-                    // Primary key for a contact --> contact_ + date & time
-                    let key =`event_${Date.now()}`;
-                    localStorage.setItem(key, newEvent.serialize());
-                    alert("The information about your event has been submitted");
-                    DisplayEventsFromStorage();
-                    eventTime.value = "";
-                    eventDescription.value = "";
-                    eventName.value = "";
-                    eventDate.value = "";
-                    eventLocation.value = "";
-                    router.navigate("/eventplanning");
-                }
-                else{
-                    console.error("[ERROR] Event serialization failed");
-                }
-
-            });
+        });
 
     }
 

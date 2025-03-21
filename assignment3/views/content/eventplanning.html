@@ -5,6 +5,7 @@
     <p>Do you have ideas or events you would like to add to the volunteer Connect Community </p>
     </div>
     <div>
+    <h3 class="text-success" id="messageSubmitted"></h3>
     <form class="mt-5" action="">
         <h3 class="text-center">Events planning form</h3>
         <div class="text-center">
@@ -14,12 +15,12 @@
 
         <div class="text-center">
             <label for="eDate">Event Date</label>
-            <input type="text" name="eDate" id="eDate" required><br><br>
+            <input type="date" name="eDate" id="eDate" required><br><br>
         </div>
 
         <div class="text-center">
             <label for="eTime">Event Time</label>
-            <input type="text" name="eTime" id="eTime" required><br><br>
+            <input type="time" name="eTime" id="eTime" required><br><br>
         </div>
 
         <div class="text-center">
@@ -29,7 +30,7 @@
 
         <div class="text-center">
             <label for="eDescription">Event Description</label>
-            <input type="text" name="eDescription" id="eDescription" required><br><br>
+            <textarea type="text" name="eDescription" id="eDescription" required></textarea><br><br>
         </div>
         <div class="text-center">
             <button class="btn btn-primary" id="submitEvent" type="submit">Submit</button>
