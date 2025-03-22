@@ -2,10 +2,12 @@
 
 import {Header} from "./header.js";
 import {AuthGuard} from "./authguard.js";
+type RouteMap = {[key: string]: string};
 
 export class Router {
 
-    constructor(routes) {
+    private routes: RouteMap;
+    constructor(routes: RouteMap) {
         this.routes = routes;
         this.init();
     }
@@ -25,11 +27,11 @@ export class Router {
         });
     }
 
-    navigate(path){
+    navigate(path:string):void{
         location.hash = path;
     }
 
-    loadRoute(path){
+    loadRoute(path:string ):void{
         console.log(`[INFO] Loading route: ${path}`);
 
         // Extract base path: /edit#contact_123 -> edit
@@ -49,7 +51,7 @@ export class Router {
             .then(html => {
                 console.log("Adding to main tag");
 
-                let mainTag = document.querySelector("main");
+                let mainTag = document.querySelector("main") as HTMLElement;
 
                 if (mainTag.innerHTML !== "") {
                     mainTag.innerHTML = "";

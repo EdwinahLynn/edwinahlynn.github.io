@@ -11,9 +11,9 @@ export async function Header(){
     return fetch("./views/components/header.html")
         .then(response => response.text())
         .then(data => {
-            document.querySelector("header").innerHTML = data;
+            (document.querySelector("header")as HTMLElement).innerHTML = data;
             updateActiveNavLink();
-            LoadSearchBar;
+            LoadSearchBar();
             console.log("in header")
             CheckLogin();
         })
@@ -22,13 +22,13 @@ export async function Header(){
         });
 }
 
-export async function LoadSearchBar(){
+export function LoadSearchBar(){
     // Call the login function
 
     // Get obtain the div container and get the links inside it plus the search bar
-    let searchBox = document.getElementById("search");
-    let divContainer = document.getElementById("hasLinks");
-    let links = divContainer.getElementsByTagName("a");
+    let searchBox = (document.getElementById("search") as HTMLInputElement);
+    let divContainer = (document.getElementById("hasLinks") as HTMLElement);
+    let links = (divContainer.getElementsByTagName("a") as HTMLCollectionOf<HTMLAnchorElement>);
 
     // Filter
     // Attach an event listener for the search box everytime a letter is pressed
@@ -58,16 +58,20 @@ export async function LoadSearchBar(){
     //  How TO - Search Menu .W3schools. https://www.w3schools.com/howto/howto_js_search_menu.asp
 
     // Attach an event listener to the search button when its clicked
-    let searchButton = document.getElementById("searchButton");
+    let searchButton = document.getElementById("searchButton") as HTMLButtonElement;
     searchButton.addEventListener("click", function (event) {
 
         // Prevent the default behavior
         event.preventDefault();
 
         // Get the div container and all links in it, plus the search bar
-        let divContainer = document.getElementById("hasLinks");
+        let divContainer = document.getElementById("hasLinks") as HTMLElement | null;
+        if(!divContainer) {
+            console.log("Div Container not found");
+            return;
+        }
         let links = divContainer.getElementsByTagName("a");
-        let searchBox = document.getElementById("search");
+        let searchBox = document.getElementById("search") as HTMLInputElement;
 
         // Change the entered value to lower case letters
         let searchBoxValue = searchBox.value.trim().toLowerCase();
@@ -93,9 +97,9 @@ export function updateActiveNavLink(){
     const currentPath = location.hash.slice(1);
     const navLinks = document.querySelectorAll("nav a");
 
-    navLinks.forEach((link) => {
+    navLinks.forEach((link:Element) => {
 
-        const linkPath = link.getAttribute("href").replace("#","");
+        const linkPath = link.getAttribute("href")?.replace("#","") || "";
 
         if (currentPath === linkPath) {
             link.classList.add("active");
@@ -108,7 +112,7 @@ export function updateActiveNavLink(){
 }
 function CheckLogin() {
 
-    const login = document.getElementById("login");
+    const login = document.getElementById("login") as HTMLAnchorElement;
 
     if(!login){
         console.warn("[WARNING] LoginNav element not found! Skipping CheckLogin().");
@@ -123,32 +127,32 @@ function CheckLogin() {
 
         //login.removeEventListener("click", handleLogout);
         login.addEventListener("click", handleLogout);
-        let statisticsNavLink = document.getElementById("stat");
-        let eventsPlanningNavLink  = document.getElementById("planning");
+        let statisticsNavLink = document.getElementById("stat") as HTMLElement;
+        let eventsPlanningNavLink  = document.getElementById("planning") as HTMLElement;
         statisticsNavLink.style.display= "block";
         eventsPlanningNavLink.style.display = "block";
         let message = document.getElementById("welcomeMessage");
         let user = JSON.parse(userSession);
+        if (!message){
+            console.log("Message Tag not found")
+            return;
+        }
         message.innerText = `Welcome back ${user.Username} !`;
     }
     else{
         login.innerHTML = `<i class = "fas fa-sign-out-alt"></i> Login`;
         login.removeEventListener("click", handleLogout);
-        let statisticsNavLink = document.getElementById("stat");
-        let eventsPlanningNavLink  = document.getElementById("planning");
+        let statisticsNavLink = document.getElementById("stat") as HTMLElement;
+        let eventsPlanningNavLink  = document.getElementById("planning") as HTMLElement;
         statisticsNavLink.style.display = "none";
         eventsPlanningNavLink.style.display = "none";
     }
 }
 
-function  handleLogout(event){
+function  handleLogout(event:any){
     event.preventDefault();
 
     sessionStorage.removeItem("user");
     console.log("[INFO] User logged out. Updating UI...");
     router.navigate("/login");
-
-    /*Header().then(() =>{
-        router.navigate("/login");
-    });*/
 }

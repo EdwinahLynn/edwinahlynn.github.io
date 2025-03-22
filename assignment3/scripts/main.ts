@@ -7,6 +7,8 @@ import {Header} from "./header.js";
 import {Router} from "./router.js";
 import {AuthGuard} from "./authguard.js";
 import {Footer} from "./footer.js";
+import {NewEvent} from "./eventplanning";
+import {Chart} from "chart.js";
 
 const pageTitles = {
     "/": "Home",
@@ -48,19 +50,28 @@ export const router = new Router(routes);
     function DisplayEventsFromStorage() {
         console.log("Displaying Events from Storage....");
         if (localStorage.length > 0){
-            let eventList = document.getElementById("forDisplayingEvents");
+            let eventList: HTMLElement | null = document.getElementById("forDisplayingEvents");
             let eventInformation = "";
 
-            let keys = Object.keys(localStorage);
+            if (!eventList){
+                console.log("No events found");
+                return;
+            }
+
+            let keys:string[] = Object.keys(localStorage);
             console.log(keys);
 
-            for (const key of keys){
+            keys.forEach((key:string) => {
                 if(key.startsWith("event_")){
-                    let eventData = localStorage.getItem(key);
+                    let eventData :string | null = localStorage.getItem(key);
+                    if (!eventData){
+                        console.log("Key not available");
+                        return;
+                    }
 
                     try {
                         console.log(eventData);
-                        let event = new core.NewEvent();
+                        let event = new NewEvent();
                         event.deserialize(eventData);
 
                         eventInformation += `
@@ -84,49 +95,54 @@ export const router = new Router(routes);
                     console.log("No keys found");
                 }
                 eventList.innerHTML = eventInformation;
-            }
+            })
         }
-        const deleteButtons = document.querySelectorAll("button.deleteEvent");
-        let keys = Object.keys(localStorage);
-        deleteButtons.forEach( (button) => {
-            button.addEventListener("click",function (event) {
+        const deleteButtons = document.querySelectorAll("button.deleteEvent") as NodeListOf<HTMLButtonElement>;
+        let keys:string[] = Object.keys(localStorage);
+        deleteButtons.forEach( (button:HTMLButtonElement) => {
+            button.addEventListener("click",function (event:Event) {
                 event.preventDefault();
-                for (const key of keys){
-                    if (key === this.value) {  // Check if key matches button value
+                const otherKey = button.value;
+                keys.forEach((key:string) => {
+                    if (key === otherKey) {
                         if (confirm("Do you want to delete this event?")) {
                             localStorage.removeItem(key);
-                            DisplayEventsFromStorage();  // Refresh event list
+                            DisplayEventsFromStorage();
                         }}
-                }
+                });
             });
         });
     }
     function DisplayEventPlanningPage(){
-        let submitEventButton = document.getElementById("submitEvent");
+        let submitEventButton:HTMLElement | null = document.getElementById("submitEvent");
+        if (!submitEventButton){
+            console.log("No submit buttoncfound");
+            return;
+        }
 
         submitEventButton.addEventListener("click", (event) => {
             event.preventDefault();
             console.log("Form submitted");
-            let eventName = document.getElementById("eName");
-            let eventDate = document.getElementById("eDate");
-            let eventDescription = document.getElementById("eDescription");
-            let eventLocation = document.getElementById("eLocation");
-            let eventTime = document.getElementById("eTime");
+            let eventName = document.getElementById("eName")as HTMLInputElement;
+            let eventDate = document.getElementById("eDate") as HTMLInputElement;
+            let eventDescription = document.getElementById("eDescription") as HTMLInputElement;
+            let eventLocation = document.getElementById("eLocation") as HTMLInputElement;
+            let eventTime = document.getElementById("eTime") as HTMLInputElement;
 
-            let newEvent = new core.NewEvent(eventName.value, eventDescription.value, eventDate.value,
+            let newEvent: NewEvent = new NewEvent(eventName.value, eventDescription.value, eventDate.value,
                 eventTime.value, eventLocation.value);
             if(newEvent.serialize()){
                 // Primary key for a contact --> contact_ + date & time
-                let key =`event_${Date.now()}`;
+                let key:string =`event_${Date.now()}`;
                 localStorage.setItem(key, newEvent.serialize());
                 DisplayEventsFromStorage();
-                let message = document.getElementById("messageSubmitted");
+                let message: HTMLElement | null = document.getElementById("messageSubmitted");
+                if (!message){
+                    console.log("No message elemeny found")
+                    return;
+                }
                 message.innerHTML = "Your form has been submitted";
-                eventTime = "";
-                eventDescription = "";
-                eventName = "";
-                eventDate  = "";
-                eventLocation = "";
+                router.navigate("/eventplanning");
             }
             else{
                 console.error("[ERROR] Event serialization failed");
@@ -138,7 +154,7 @@ export const router = new Router(routes);
     }
 
     // Added a function to display charts on the statistic page
-    async function DisplayStatistics() {
+    async function DisplayStatistics() :Promise<void> {
         console.log("Display StatisticsPage");
         const response = await fetch("data/statistics.json");
         if (!response.ok) {
@@ -151,12 +167,12 @@ export const router = new Router(routes);
         console.log("here");
         console.log(statistics);
 
-        const values = [];
-        const labels = [];
-        const colours = ["blue", "green","purple","pink","yellow", "brown", "black","grey", "orange", "indigo",
+        const values : any = [];
+        const labels: any = [];
+        const colours:string[] = ["blue", "green","purple","pink","yellow", "brown", "black","grey", "orange", "indigo",
         "gold", "silver"];
 
-        statistics.forEach((statistic) => {
+        statistics.forEach((statistic:any) => {
             labels.push(statistic.month);
             values.push(parseInt(statistic.visitors, 10));
         });
@@ -193,7 +209,7 @@ export const router = new Router(routes);
         console.log("In EventsType...");
 
         // Check to see if the div tag is empty
-        let divTag = document.getElementById("eventsDisplay");
+        let divTag = document.getElementById("eventsDisplay") as HTMLElement        ;
 
         // Empty the div tag if it's not empty
         if (divTag.innerHTML !== "") {
@@ -203,7 +219,7 @@ export const router = new Router(routes);
 
         try {
             // Create a function to load the first event type(workshops) in the json file
-            async function eventTypes(eventTitle, events) {
+            async function eventTypes(eventTitle:any, events : any){
 
                 // Create a heading tag and add it to the body
                 let body = document.body;
@@ -213,14 +229,14 @@ export const router = new Router(routes);
 
 
                 // Create a loop to run through the elements in the json file
-                events.forEach(event => {
+                events.forEach((event:any) => {
                     console.log("in the loop");
 
                     // Create paragraph elements for the information in the json file
-                    let eventName = document.createElement("p");
-                    let eventDescription = document.createElement("p");
-                    let eventDateTime = document.createElement("p");
-                    let location = document.createElement("p");
+                    let eventName = document.createElement("p")as HTMLParagraphElement;
+                    let eventDescription = document.createElement("p") as HTMLParagraphElement;
+                    let eventDateTime = document.createElement("p") as HTMLParagraphElement;
+                    let location = document.createElement("p") as HTMLParagraphElement;
                     location.style.marginBottom = "50px";
 
                     // Set attributes and text content for the paragraph elements
@@ -265,6 +281,10 @@ export const router = new Router(routes);
         catch (error) {
             console.error("Error occured while fetching data for events based on type", error);
             let errorMessage = document.getElementById("errorMessage");
+            if(!errorMessage){
+                console.log("Error Message tag not found");
+                return;
+            }
             errorMessage.textContent = "Error: Cannot display this information now. Try again later";
         }
     }
@@ -273,7 +293,7 @@ export const router = new Router(routes);
     async function LoadEventsDate() {
 
         // Check to see if the div tag is empty
-        let mainDivTag = document.getElementById("eventsDisplay");
+        let mainDivTag = document.getElementById("eventsDisplay") as HTMLElement;
 
         // Empty the div tag if it's not empty
         if (mainDivTag.innerHTML !== "") {
@@ -336,6 +356,10 @@ export const router = new Router(routes);
         catch (error) {
             console.error("Error fetching events based on the date", error);
             let errorMessage = document.getElementById("eventsDisplay");
+            if(!errorMessage){
+                console.log("Error Message tag not found");
+                return;
+            }
             errorMessage.textContent = "Unable to load events based on the date. Please try again later";
         }
 
@@ -345,7 +369,7 @@ export const router = new Router(routes);
     async function LoadEventsLocation() {
 
         // Check to see if the div tag is empty
-        let divTag = document.getElementById("eventsDisplay");
+        let divTag = document.getElementById("eventsDisplay") as HTMLElement;
 
         // Empty the div tag if it's not empty
         if (divTag.innerHTML !== "") {
@@ -406,6 +430,10 @@ export const router = new Router(routes);
         catch (error) {
             console.error("Error fetching events data", error);
             let errorMessage = document.getElementById("eventsDisplay");
+            if(!errorMessage){
+                console.log("Error, Message tag not found");
+                return;
+            }
             errorMessage.textContent = "Unable to load events based on Location. Please try again later"
         }
         // Call the footer function
@@ -416,16 +444,21 @@ export const router = new Router(routes);
 
 
     // Create a function for the login page
-    function DisplayLoginPage() {
+    async function DisplayLoginPage():Promise<void> {
         console.log("Loading login page");
+
         // Get the login button and attach an event listener to it
-        let loginButton = document.getElementById("loginButton");
-        loginButton.addEventListener("click", async (event) => {
+        let loginButton = (document.getElementById("loginButton")as HTMLButtonElement);
+        if (!loginButton) {
+            console.error("Login button not found");
+            return;
+        }
+        loginButton.addEventListener("click", async (event:MouseEvent)=> {
             event.preventDefault();
 
             // Get the values in the username and password field boxes
-            const username = document.getElementById("userName").value.trim();
-            const password = document.getElementById("password").value.trim();
+            const username = (document.getElementById("userName") as HTMLInputElement).value.trim();
+            const password =( document.getElementById("password") as HTMLInputElement).value.trim();
 
             try {
 
@@ -479,9 +512,10 @@ export const router = new Router(routes);
                 // If there were no matched from the array, display error messages
                 else {
                     let errorMessage = document.getElementById("errorMessage");
+                    if (errorMessage){
                     errorMessage.classList.add("alert", "alert-danger");
                     errorMessage.textContent = "Invalid Username or password. Please Try again";
-                    errorMessage.style.display = "block";
+                    errorMessage.style.display = "block";}
                 }
             }
 
@@ -498,7 +532,7 @@ export const router = new Router(routes);
 
         try {
             //Get the element in the images file gallery file that will be used to display elements
-            let imageItems = document.querySelector(".carousel-inner");
+            let imageItems = document.querySelector(".carousel-inner") as HTMLElement;
 
             // Send a request to the images.json file that has the images
             const response = await fetch("data/images.json");
@@ -547,7 +581,7 @@ export const router = new Router(routes);
     }
 
     // Create a function to display news on the main page
-    async function DisplayNews() {
+    async function DisplayNews(){
 
         // Set constants such as an apikey, url, country and so on
         const apiKey = "ab3611c7e9b40fdd35eb3b491d703bd6";
@@ -569,6 +603,10 @@ export const router = new Router(routes);
 
             // Get the element where the news will be displayed
             const newsDataElement = document.getElementById("news");
+            if (!newsDataElement) {
+               console.error("No news tag found for news.");
+               return;
+            }
             let htmlContent = '';
 
             // Loop through only two elements from the array
@@ -587,6 +625,10 @@ export const router = new Router(routes);
         catch (error) {
             console.error("Error fetching data", error);
             let errorMessage = document.getElementById("news");
+            if (!errorMessage) {
+                console.error("No message tag found for news.");
+                return;
+            }
             errorMessage.textContent = "Unable to contact and display the news at this time"
         }
 
@@ -599,6 +641,10 @@ export const router = new Router(routes);
         // A function is added to the Get involved button on the home page. The function loads the
         //opportunities page
         let aboutUsBtn = document.getElementById("GetInvolvedBtn");
+        if(!aboutUsBtn){
+            console.log("Button not found");
+            return;
+        }
         aboutUsBtn.addEventListener("click", function () {
             location.href = "opportunities.html";
         });
@@ -613,8 +659,12 @@ export const router = new Router(routes);
         link.textContent = "Donate";
         listItem.appendChild(link);
 
-        let headerNav = document.querySelector("ul");
-        let login = document.getElementById("loginId");
+        let headerNav = document.querySelector("ul") as HTMLUListElement | null;
+        let login = document.getElementById("loginId") as HTMLElement | null;
+        if (!headerNav) {
+            console.error("Header Nav not found");
+            return;
+        }
         headerNav.insertBefore(listItem, login);
         DisplayNews();
     }
@@ -630,6 +680,10 @@ export const router = new Router(routes);
 
         // Changing the opportunities to Volunteer Now in the nav bar
         let newTerm = document.querySelector("#opportunities");
+        if(!newTerm) {
+            console.log ("opportunities tag not found");
+            return;
+        }
         newTerm.textContent = "Volunteer now";
 
         console.log("Calling DisplayOpportunitiesPage()...");
@@ -691,7 +745,7 @@ export const router = new Router(routes);
 
         // Creating html elements for the opportunity card
         //let DocumentBody = document.body;
-        let divTag = document.getElementById("forOpportunities")
+        let divTag = document.getElementById("forOpportunities");
         let mainDiv = document.createElement("div");
         mainDiv.setAttribute("class", "container-fluid");
 
@@ -742,9 +796,9 @@ export const router = new Router(routes);
                 divTag2.appendChild(breakLine);
                 divTag2.appendChild(breakLine2);
 
-                let submit = document.getElementById("submit");
-                let fullNameValue = document.getElementById("fullName");
-                let roleValue = document.getElementById("role");
+                let submit = document.getElementById("submit") as HTMLButtonElement;
+                let fullNameValue = document.getElementById("fullName") as HTMLInputElement;
+                let roleValue = document.getElementById("role") as HTMLInputElement;
 
                 // Creating a constant for numbers
                 const numberRegex = /^\d+$/;
@@ -769,6 +823,10 @@ export const router = new Router(routes);
         }
         // Adds all the cards in the main div to the html body
         mainDiv.appendChild(divTag1);
+        if (!divTag) {
+            console.log("Div tag not found");
+            return;
+        }
         divTag.appendChild(mainDiv);
 
     }
@@ -779,12 +837,12 @@ export const router = new Router(routes);
         console.log("Calling DisplayEventsPage()...");
 
         // Getting the checkboxes
-        let calendarCheckBx = document.getElementById("calendarCheckBox");
-        let eventsCheckBx = document.getElementById("eventsCheckBox");
-        let dateCheckBx = document.getElementById("DateCheckBox");
-        let locationCheckBx = document.getElementById("LocationCheckBox");
-        let events = document.getElementById("eventsDisplay");
-        let calendar = document.getElementById("calendarDisplay");
+        let calendarCheckBx = document.getElementById("calendarCheckBox") as HTMLFormElement;
+        let eventsCheckBx = document.getElementById("eventsCheckBox") as HTMLFormElement;
+        let dateCheckBx = document.getElementById("DateCheckBox") as HTMLFormElement;
+        let locationCheckBx = document.getElementById("LocationCheckBox") as HTMLFormElement;
+        let events = document.getElementById("eventsDisplay") as HTMLElement ;
+        let calendar = document.getElementById("calendarDisplay") as HTMLElement;
 
 
         // Attach an event listener to the event click for the calendar check box
@@ -836,12 +894,12 @@ export const router = new Router(routes);
         console.log("Calling DisplayContactPage()...");
 
         // Get the form elements
-        let firstNameValue = document.getElementById("fName");
-        let lastNameValue = document.getElementById("lName");
+        let firstNameValue = document.getElementById("fName") as HTMLInputElement;
+        let lastNameValue = document.getElementById("lName") as HTMLInputElement;
         let emailValue = document.getElementById("email");
         let subjectValue = document.getElementById("subject");
 
-        let submitContactBtn = document.getElementById("submitContact");
+        let submitContactBtn = document.getElementById("submitContact") as HTMLButtonElement;
         let submitFeedbackBtn = document.getElementById("submitFeedback");
 
         // Create a constant for a number format that will be used to check if there are numbers in the field
@@ -865,6 +923,10 @@ export const router = new Router(routes);
             // If everything is successfull, display a message and redirect to the home page
             else {
                 let message = document.getElementById("message");
+                if(!message){
+                    console.log("Message tag not found");
+                    return;
+                }
                 let paragraph = document.createElement("p");
                 paragraph.textContent = "Thank For Contacting Us! We shall get back to you shortly";
                 message.appendChild(paragraph);
@@ -875,6 +937,10 @@ export const router = new Router(routes);
                 }, 5000);
             }
         })
+        if (!submitFeedbackBtn) {
+            console.log("Submit button not found");
+            return;
+        }
 
         // Attach an event listener to te button that brings the feedback form
         submitFeedbackBtn.addEventListener("click", function (event) {
@@ -884,8 +950,8 @@ export const router = new Router(routes);
             const numberRegex = /^\d+$/;
 
             // Get the values in the field boxes
-            let firstName = document.getElementById("firstName").value;
-            let lastName = document.getElementById("lastName").value;
+            let firstName = (document.getElementById("firstName") as HTMLInputElement).value;
+            let lastName = (document.getElementById("lastName") as HTMLInputElement).value;
 
             // Display and error message if there is a number in the first name field box
             if ((numberRegex.test(firstName))) {
@@ -900,8 +966,8 @@ export const router = new Router(routes);
                 let xhttp = new XMLHttpRequest();
 
                 // Get the other values in the form
-                let email = document.getElementById("emailAddress").value;
-                let messageBox = document.getElementById("messageBox").value;
+                let email = (document.getElementById("emailAddress") as HTMLInputElement).value;
+                let messageBox = (document.getElementById("messageBox") as HTMLInputElement).value;
 
                 // format the data for sending to the URL
                 let content = "first_name=" + (firstName) + "&last_name=" + (lastName)
@@ -939,10 +1005,10 @@ export const router = new Router(routes);
         //AJAX - Send a Request To a Server. W3schools. https://www.w3schools.com/Xml/ajax_xmlhttprequest_send.asp
         //AJAX - The XMLHttpRequest Object. W3schools. https://www.w3schools.com/Xml/ajax_xmlhttprequest_create.asp
 
-        let feedBackForm = document.getElementById("feedBackForm");
-        let contactForm = document.getElementById("contactForm");
-        let feedBackBtn = document.getElementById("displayFeedBackForm");
-        let contactBtn = document.getElementById("displayContactForm");
+        let feedBackForm = document.getElementById("feedBackForm") as HTMLFormElement;
+        let contactForm = document.getElementById("contactForm") as HTMLFormElement;
+        let feedBackBtn = document.getElementById("displayFeedBackForm") as HTMLButtonElement;
+        let contactBtn = document.getElementById("displayContactForm") as HTMLButtonElement;
         feedBackBtn.addEventListener("click", function () {
 
             contactForm.style.display = "none";
@@ -976,8 +1042,9 @@ export const router = new Router(routes);
 
     }
 
-    document.addEventListener("routeLoaded", (event) => {
-        const newPath = event.detail; // extract the route from the event passed
+    document.addEventListener("routeLoaded", (event:Event) => {
+        const otherEvent = event as CustomEvent
+        const newPath = otherEvent.detail;
         console.log(`[INFO] Route Loaded: ${newPath}`);
 
         Header().then(() => {
@@ -986,7 +1053,7 @@ export const router = new Router(routes);
         AuthGuard();
     });
 
-    function handlePageLogic(path){
+    function handlePageLogic(path:string){
         switch(path){
             case "/":
                 DisplayHomePage();

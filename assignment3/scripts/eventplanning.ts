@@ -3,18 +3,23 @@
 /**
  * Represents a event field with name, description, date, time and location
  */
-(function (core) {
-    class NewEvent {
 
-        /**
-         * Constructs a new Contact instance
-         * @param eventName
-         * @param eventDescription
-         * @param eventDate
-         * @param eventTime
-         * @param eventLocation
-         */
-        constructor(eventName = "", eventDescription = "", eventDate = "", eventTime,
+export class NewEvent {
+    private _eventName: string;
+    private _eventDescription: string;
+    private _eventDate: string;
+    private _eventTime: string;
+    private _eventLocation: string;
+
+    /**
+     * Constructs a new Contact instance
+     * @param eventName
+     * @param eventDescription
+     * @param eventDate
+     * @param eventTime
+     * @param eventLocation
+     */
+        constructor(eventName = "", eventDescription = "", eventDate = "", eventTime = "",
         eventLocation = "") {
             this._eventName = eventName;
             this._eventDescription = eventDescription;
@@ -77,7 +82,7 @@
             if (eventDate.trim() === "") {
                 throw new Error("Date must not be empty");
             }
-            this._eventNDate = eventDate;
+            this._eventDate = eventDate;
         }
 
         /**
@@ -128,7 +133,7 @@
          * Serializes the contact details into a string format suitable for storage
          * @returns {string|null}
          */
-        serialize() {
+        serialize() : string{
             console.log(this._eventName)
             console.log(this._eventTime)
             console.log(this._eventDescription)
@@ -136,7 +141,6 @@
             console.log(this._eventLocation)
             if (!this._eventName || !this._eventDescription || !this._eventDate || !this._eventTime || !this._eventLocation) {
                 console.error("One of more of the event fields are missing");
-                return null;
             }
             return `${this._eventName}, ${this._eventDescription}, ${this._eventDate}, ${this._eventTime}, ${this._eventLocation}`;
         }
@@ -145,8 +149,8 @@
          * Deserialize a string (comma-delimited) of contact details and update properties
          * @param eventsInfo
          */
-        deserialize(eventsInfo) {
-            if (typeof eventsInfo !== "string" || eventsInfo.split(",").length !== 5) {
+        deserialize(eventsInfo : string){
+            if (eventsInfo.split(",").length !== 5) {
                 console.error("One or more of event fiels are invalid");
                 return;
             }
@@ -160,6 +164,4 @@
         }
     }
 
-    core.NewEvent = NewEvent;
 
-})(core || (core = {}));
