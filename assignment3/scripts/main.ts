@@ -7,8 +7,9 @@ import {Header} from "./header.js";
 import {Router} from "./router.js";
 import {AuthGuard} from "./authguard.js";
 import {Footer} from "./footer.js";
-import {NewEvent} from "./eventplanning";
-import {Chart} from "chart.js";
+import {NewEvent} from "./eventplanning.js";
+import {Chart} from "chart.js/auto";
+
 
 const pageTitles = {
     "/": "Home",
