@@ -11,7 +11,8 @@
     "chart.js": "^4.4.8",
     "cors": "^2.8.5",
     "express": "^4.21.2",
-    "fs": "^0.0.1-security"
+    "fs": "^0.0.1-security",
+    "vite": "^6.2.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -27,5 +28,8 @@
     "url": "https://github.com/EdwinahLynn/edwinahlynn.github.io/issues"
   },
   "homepage": "https://github.com/EdwinahLynn/edwinahlynn.github.io#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@types/chart.js": "^2.9.41"
+  }
 }

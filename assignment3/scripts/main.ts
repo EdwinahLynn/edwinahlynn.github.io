@@ -8,7 +8,6 @@ import {Router} from "./router.js";
 import {AuthGuard} from "./authguard.js";
 import {Footer} from "./footer.js";
 import {NewEvent} from "./eventplanning.js";
-import {Chart} from "chart.js/auto";
 
 
 const pageTitles = {
@@ -156,6 +155,7 @@ export const router = new Router(routes);
 
     // Added a function to display charts on the statistic page
     async function DisplayStatistics() :Promise<void> {
+        const Chart =  (window as any).Chart;
         console.log("Display StatisticsPage");
         const response = await fetch("data/statistics.json");
         if (!response.ok) {
