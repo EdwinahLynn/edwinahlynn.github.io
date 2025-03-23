@@ -2,11 +2,13 @@
 // Student ID: 1008884601
 // Date: 25th/01/2024
 "use strict";
+// Import the important functions
 import { Header } from "./header.js";
 import { Router } from "./router.js";
 import { AuthGuard } from "./authguard.js";
 import { Footer } from "./footer.js";
 import { NewEvent } from "./eventplanning.js";
+// Create the page titles for the paths
 const pageTitles = {
     "/": "Home",
     "/home": "Home",
@@ -22,6 +24,7 @@ const pageTitles = {
     "/termsofservice": "Terms of Service",
     "/404": "Page Not Found"
 };
+// Create the routes
 const routes = {
     "/": "views/content/home.html",
     "/home": "views/content/home.html",
@@ -37,33 +40,42 @@ const routes = {
     "/termsofservice": "views/content/termsofservice/",
     "/404": "views/content/404.html",
 };
+// Export the routes to other files
 export const router = new Router(routes);
 // IIFE - Immediately Invoked Functional Expression
 (function () {
+    // Create a function that displays events from the local storage+
     function DisplayEventsFromStorage() {
         console.log("Displaying Events from Storage....");
+        // If the items in the storage, get the tag that will be used to display them
         if (localStorage.length > 0) {
             let eventList = document.getElementById("forDisplayingEvents");
             let eventInformation = "";
+            // Display an error if the tag isn't found
             if (!eventList) {
                 console.log("No events found");
                 return;
             }
+            // Create an array made of the keys in the local storage
             let keys = Object.keys(localStorage);
             console.log(keys);
+            // Loop through every key
             keys.forEach((key) => {
+                // Check for the keys that hold information about the events
                 if (key.startsWith("event_")) {
+                    // Get the information in the storage based on the key
                     let eventData = localStorage.getItem(key);
+                    // Display an error message if the information cant be obtained
                     if (!eventData) {
                         console.log("Key not available");
                         return;
                     }
                     try {
-                        console.log(eventData);
+                        // Create a NewEvent Object and deserialize the fetched data from storage
                         let event = new NewEvent();
                         event.deserialize(eventData);
+                        // Add the information using HTML elements to the empty string
                         eventInformation += `
-    
                                     <strong> Event Name : ${event.eventName}</strong>
                                     <p> Event Description : ${event.eventDescription}</p>
                                     <p> Event Date : ${event.eventDate}</p>
@@ -75,6 +87,7 @@ export const router = new Router(routes);
                                     <br><br>
                                     `;
                     }
+                    // Display an error if the try block fails
                     catch (error) {
                         console.log(error);
                     }
@@ -82,17 +95,23 @@ export const router = new Router(routes);
                 else {
                     console.log("No keys found");
                 }
+                // set the HTML tag to the string with information about the events
                 eventList.innerHTML = eventInformation;
             });
         }
+        // Attach an event handler to all the delete buttons
         const deleteButtons = document.querySelectorAll("button.deleteEvent");
+        // Get all the keys and put them in an array
         let keys = Object.keys(localStorage);
+        // Loop through each button and key and check which ones match
         deleteButtons.forEach((button) => {
             button.addEventListener("click", function (event) {
                 event.preventDefault();
                 const otherKey = button.value;
                 keys.forEach((key) => {
+                    // The ones that match, is the key of the event to be deleted
                     if (key === otherKey) {
+                        // Display a confirmation message that removes the item from storage when is clicked
                         if (confirm("Do you want to delete this event?")) {
                             localStorage.removeItem(key);
                             DisplayEventsFromStorage();
@@ -102,34 +121,44 @@ export const router = new Router(routes);
             });
         });
     }
+    // Create a function for the event planning page
     function DisplayEventPlanningPage() {
+        // Get the submit button from the event planning page and display and error if not found
         let submitEventButton = document.getElementById("submitEvent");
         if (!submitEventButton) {
-            console.log("No submit buttoncfound");
+            console.log("No submit button found");
             return;
         }
+        // Attach an event handle to the submit button that send the form information to the local storage
         submitEventButton.addEventListener("click", (event) => {
             event.preventDefault();
             console.log("Form submitted");
+            // Get the Form HTML Elements
             let eventName = document.getElementById("eName");
             let eventDate = document.getElementById("eDate");
             let eventDescription = document.getElementById("eDescription");
             let eventLocation = document.getElementById("eLocation");
             let eventTime = document.getElementById("eTime");
+            // Pass the values of the element into the new event object created
             let newEvent = new NewEvent(eventName.value, eventDescription.value, eventDate.value, eventTime.value, eventLocation.value);
+            // Call the serialize function on the new object
             if (newEvent.serialize()) {
-                // Primary key for a contact --> contact_ + date & time
+                // Set the local storage key to the current date and time
                 let key = `event_${Date.now()}`;
+                // Pass the key information and entered data to the local storage
                 localStorage.setItem(key, newEvent.serialize());
+                // Reload the events from storage
                 DisplayEventsFromStorage();
+                // Display a confirmation message of the received input to the user and route back to the same page
                 let message = document.getElementById("messageSubmitted");
                 if (!message) {
-                    console.log("No message elemeny found");
+                    console.log("No message element found");
                     return;
                 }
                 message.innerHTML = "Your form has been submitted";
                 router.navigate("/eventplanning");
             }
+            // Display and error message is serializing data fails
             else {
                 console.error("[ERROR] Event serialization failed");
                 alert("All fields are required to be filled");
@@ -138,8 +167,10 @@ export const router = new Router(routes);
     }
     // Added a function to display charts on the statistic page
     async function DisplayStatistics() {
+        // Create a Chart object
         const Chart = window.Chart;
         console.log("Display StatisticsPage");
+        // Fetch the data from the statistics json file
         const response = await fetch("data/statistics.json");
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
@@ -147,18 +178,17 @@ export const router = new Router(routes);
         // Assign the json response to a variable
         const jsonData = await response.json();
         const statistics = jsonData.stats;
-        console.log("here");
-        console.log(statistics);
+        // Create empty arrays to hold the values in the json file and create an array of colours too
         const values = [];
         const labels = [];
         const colours = ["blue", "green", "purple", "pink", "yellow", "brown", "black", "grey", "orange", "indigo",
             "gold", "silver"];
+        // Fos each value in the json file, add to the empty arrays
         statistics.forEach((statistic) => {
             labels.push(statistic.month);
             values.push(parseInt(statistic.visitors, 10));
         });
-        console.log(labels);
-        console.log(values);
+        // Create a bar chart and pass through it the labels, colours and values
         new Chart("barChart", {
             type: "bar",
             data: {
@@ -170,6 +200,7 @@ export const router = new Router(routes);
                 ]
             }
         });
+        // Create a pie chart and pass through it the labels, colours and values
         new Chart("pieChart", {
             type: "pie",
             data: {
@@ -870,25 +901,31 @@ export const router = new Router(routes);
         console.log("Calling DisplayTermsOfServicePage()...");
     }
     async function Start() {
+        // Calls the AuthGuard function to check if the user has access to the pages
         AuthGuard();
         console.log("Starting...");
-        console.log(`Current document title is ${document.title}`);
+        // Load the header, footer and pass the path to the load route function that loads the HTML content
         await Header();
         const currentPath = location.hash.slice(1) || "/";
         router.loadRoute(currentPath);
         await Footer();
         AuthGuard();
     }
+    // Runs when a new route is loaded
     document.addEventListener("routeLoaded", (event) => {
+        // Extracts data from the event
         const otherEvent = event;
         const newPath = otherEvent.detail;
         console.log(`[INFO] Route Loaded: ${newPath}`);
+        // Loads the header then calls the handle page logic function that calls the different tailored page functions
         Header().then(() => {
             handlePageLogic(newPath);
         });
+        // Check if the user is authorized again
         AuthGuard();
     });
     function handlePageLogic(path) {
+        // This calls the functions based on what path is passed
         switch (path) {
             case "/":
                 DisplayHomePage();
@@ -929,6 +966,7 @@ export const router = new Router(routes);
                 break;
         }
     }
+    // Calls the Start function when the page is loaded
     window.addEventListener("DOMContentLoaded", () => {
         console.log("DOM fully loaded and parsed");
         Start();

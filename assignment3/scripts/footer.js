@@ -1,5 +1,5 @@
 export function Footer() {
-    // Create a dynamic footer that has the terms of service and privacy policy page and it to the document
+    // Create a dynamic footer that has the terms of service and privacy policy links and add it to the document
     let DocumentBody = document.body;
     let footer = document.createElement("footer");
     footer.setAttribute("class", "bg-dark text-center py-3");

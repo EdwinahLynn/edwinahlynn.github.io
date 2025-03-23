@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Represents a event field with name, description, date, time and location
+ * Represents an event field with name, description, date, time and location
  */
 export class NewEvent {
     _eventName;
@@ -31,7 +31,7 @@ export class NewEvent {
         return this._eventName;
     }
     /**
-     * Sets the name of the event. Validates input to make sure its a string and not empty
+     * Sets the name of the event. Validates input to make sure it's not empty
      * @param eventName
      */
     set eventName(eventName) {
@@ -82,12 +82,12 @@ export class NewEvent {
         return this._eventTime;
     }
     /**
-     * Sets the time of the event. Validates input to ensure it's a non-empty number
+     * Sets the time of the event. Validates input to ensure it's not empty
      * @param eventTime
      */
     set eventTime(eventTime) {
         if (eventTime.trim() === "") {
-            throw new Error("Time cannot be empty letters");
+            throw new Error("Time cannot be empty");
         }
         this._eventTime = eventTime;
     }
@@ -99,7 +99,7 @@ export class NewEvent {
         return this._eventLocation;
     }
     /**
-     * Sets the location of the integer. Validates input to make sure its not empty
+     * Sets the location of the integer. Validates input to make sure it's not empty
      * @param eventLocation
      */
     set eventLocation(eventLocation) {
@@ -117,25 +117,21 @@ export class NewEvent {
      * @returns {string|null}
      */
     serialize() {
-        console.log(this._eventName);
-        console.log(this._eventTime);
-        console.log(this._eventDescription);
-        console.log(this._eventDate);
-        console.log(this._eventLocation);
         if (!this._eventName || !this._eventDescription || !this._eventDate || !this._eventTime || !this._eventLocation) {
             console.error("One of more of the event fields are missing");
         }
         return `${this._eventName}, ${this._eventDescription}, ${this._eventDate}, ${this._eventTime}, ${this._eventLocation}`;
     }
     /**
-     * Deserialize a string (comma-delimited) of contact details and update properties
+     * Deserialize a string that is comma separated
      * @param eventsInfo
      */
     deserialize(eventsInfo) {
         if (eventsInfo.split(",").length !== 5) {
-            console.error("One or more of event fiels are invalid");
+            console.error("One or more of event fields are invalid");
             return;
         }
+        // Sets the class properties to the items in string after separating them based on commas
         const eventArray = eventsInfo.split(",");
         this._eventName = eventArray[0];
         this._eventDescription = eventArray[1];
