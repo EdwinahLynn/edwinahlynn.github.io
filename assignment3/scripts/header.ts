@@ -1,29 +1,30 @@
 "use strict";
 
+// Import the router from the main script file
 import {router} from "./main.js";
 
-/**
- * Dynamically load the header from the header.html into the current page
- */
 export async function Header(){
     console.log("[INFO] Loading header");
 
+    // Fetch the html elements from the header file and add to the current page
     return fetch("./views/components/header.html")
         .then(response => response.text())
         .then(data => {
             (document.querySelector("header")as HTMLElement).innerHTML = data;
-            updateActiveNavLink();
+
+            // Call the function that updates links, loads the search bar and checks the login status of the user
+            updateNavBarLinks();
             LoadSearchBar();
-            console.log("in header")
             CheckLogin();
         })
         .catch(error =>{
+            // Throw and error if something fails
             console.log("[ERROR] Unable to load header");
         });
 }
 
+// Create a function for loading the search bar
 export function LoadSearchBar(){
-    // Call the login function
 
     // Get obtain the div container and get the links inside it plus the search bar
     let searchBox = (document.getElementById("search") as HTMLInputElement);
@@ -91,17 +92,21 @@ export function LoadSearchBar(){
     });
 }
 
-export function updateActiveNavLink(){
+
+// Create a function that updates the active status of the links
+export function updateNavBarLinks(){
     console.log("[INFO] Updating active nav link...");
 
-    const currentPath = location.hash.slice(1);
-    const navLinks = document.querySelectorAll("nav a");
+    // Get the current url path and also the anchor links in the nav bar
+    const currentUrlPath = location.hash.slice(1);
+    const navBarLinks = document.querySelectorAll("nav a");
 
-    navLinks.forEach((link:Element) => {
-
+    //Loop through every link in the nav bar and replace  the href attribute with a # or leave empty
+    navBarLinks.forEach((link:Element) => {
         const linkPath = link.getAttribute("href")?.replace("#","") || "";
 
-        if (currentPath === linkPath) {
+        // Set the link class to active if the current url matches the link in the loop and remove if they don't match
+        if (currentUrlPath === linkPath) {
             link.classList.add("active");
         }
         else
@@ -110,28 +115,38 @@ export function updateActiveNavLink(){
         }
     });
 }
+
+// Create a function to check the login status of the user
 function CheckLogin() {
 
-    const login = document.getElementById("login") as HTMLAnchorElement;
-
-    if(!login){
+    // Get the login link and display an error message if it's not found
+    const loginNav = document.getElementById("login") as HTMLAnchorElement;
+    if(!loginNav){
         console.warn("[WARNING] LoginNav element not found! Skipping CheckLogin().");
         return;
     }
 
+    // Get session item user
     const userSession = sessionStorage.getItem("user");
 
+    // Check if there is a user in the session
     if(userSession){
-        login.innerHTML = `<i class = "fas fa-sign-out-alt"></i> Logout`;
-        login.href = "#";
+        //Change the link text to log out and place a suitable logout icon
+        loginNav.innerHTML = `<i class = "fas fa-sign-out-alt"></i> Logout`;
+        loginNav.href = "#";
 
-        //login.removeEventListener("click", handleLogout);
-        login.addEventListener("click", handleLogout);
+        // Add an event handles that calls the log-out function when its clicked
+        loginNav.addEventListener("click", Logout);
+
+        // Make the links to the statistics page and event planning page visible to the user
         let statisticsNavLink = document.getElementById("stat") as HTMLElement;
         let eventsPlanningNavLink  = document.getElementById("planning") as HTMLElement;
         statisticsNavLink.style.display= "block";
         eventsPlanningNavLink.style.display = "block";
+
+        // Display a welcome message to the user
         let message = document.getElementById("welcomeMessage");
+        // Convert the JSON text to a java readable text
         let user = JSON.parse(userSession);
         if (!message){
             console.log("Message Tag not found")
@@ -139,9 +154,16 @@ function CheckLogin() {
         }
         message.innerText = `Welcome back ${user.Username} !`;
     }
+
+    // If there is no user in the session
     else{
-        login.innerHTML = `<i class = "fas fa-sign-out-alt"></i> Login`;
-        login.removeEventListener("click", handleLogout);
+        // Change the text to login and change the icon too
+        loginNav.innerHTML = `<i class = "fas fa-sign-out-alt"></i> Login`;
+
+        // Remove the event handler that calls the logout function
+        loginNav.removeEventListener("click", Logout);
+
+        // Hide the links to the statistics and event planning page
         let statisticsNavLink = document.getElementById("stat") as HTMLElement;
         let eventsPlanningNavLink  = document.getElementById("planning") as HTMLElement;
         statisticsNavLink.style.display = "none";
@@ -149,7 +171,9 @@ function CheckLogin() {
     }
 }
 
-function  handleLogout(event:any){
+
+// Create a function to remove the session and logout out of the page
+function  Logout(event:any){
     event.preventDefault();
 
     sessionStorage.removeItem("user");
