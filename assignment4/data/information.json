@@ -1,0 +1,69 @@
+{
+  "info": [
+    {
+      "Name": "Garage Sale Workshop",
+      "Description": "Description: In this workshop, you shall be trained for the garage sales",
+      "Date": "Date: 5th February",
+      "Time": "Time:9:00am",
+      "Location": "Location:North York street, Toronto"
+    },
+    {
+      "Name": "Environmental Workshop",
+      "Description": "Description: In this workshop, you shall be trained on how to plant trees and take care of them.",
+      "Date": "Date: 13th February",
+      "Time": "Time:10:00am",
+      "Location": "Location:City Hall, Oshawa"
+    },
+    {
+      "Name": "Teaching Workshop",
+      "Description": "Description: In this workshop, we shall go over basics of teaching so that it's easy to help out with the children and to teach them",
+      "Date": "Date:25th February",
+      "Time": "Time:10:00am",
+      "Location": "Location:City Hall, Oshawa"
+    },
+    {
+      "Name": "Child Wealth Fundraiser",
+      "Description": "Description: This is a fundraiser organized for the purpose of raising funds to send kids to school",
+      "Date": "Date: 1st February",
+      "Time": "Time: 10:00am",
+      "Location": "Location:Central Park, Toronto"
+    },
+    {
+      "Name": "Health Care Go Fund Me",
+      "Description": "Description: This fundraiser will be held for the sole purpose of raising funds to send the less needy to hospitals",
+      "Date": "Date: 15th February",
+      "Time": "Time: 12:00pm",
+      "Location": "Location:Central Park, Toronto"
+    },
+    {
+      "Name": "Pup Day",
+      "Description": "Description: This Fundraiser will be for the sole purpose of raising funds to provide for the shelter animals",
+      "Date": "Date: 16th February",
+      "Time": "Time: 9:00am",
+      "Location": "Central Park, Toronto"
+    }
+  ],
+  "info2": [
+    {
+      "Name": "Community Service",
+      "Description": "Description: This activity will be all about cleaning the environment",
+      "Date": "Date: 1st March",
+      "Time": "Time: 9:00am",
+      "Location": "Location:Around the elderly home, Oshawa"
+    },
+    {
+      "Name": "BingBong Cleanup",
+      "Description": "Description: Help us clean the main conference room after their bing bong elderly night event",
+      "Date": "Date: 4th March",
+      "Time": "Time: 12:00pm",
+      "Location": "Location:City Hall, Oshawa"
+    },
+    {
+      "Name": "Pick a plastic Day",
+      "Description": "Description: This activity will be all about cleaning recycling",
+      "Date": "Date: 1st March",
+      "Time": "Time: 9:00am",
+      "Location": "Location:Around Oshawa"
+    }
+  ]
+}

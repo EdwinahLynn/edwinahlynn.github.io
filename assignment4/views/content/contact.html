@@ -1,0 +1,101 @@
+
+<div id="contactForm" class="bg-dark text-white" >
+    <br><br>
+    <h3 class="align-text-center bg-dark text-white">Contact us</h3>
+    <p class="bg-dark text-white">
+        Do you still have questions, no worries! we are here to answer all of them. Please do fill in the form below.
+        Its important to give us your personal details so that we can easily get in touch with you to answer your questions
+    </p>
+
+    <p class="bg-dark text-white">Here at Volunteer Connect, we also value customer feed back!</p>
+    <br>
+    <h2 class="text-center bg-dark text-white">Volunteer Connect Contact Form</h2>
+
+    <form class="bg-dark text-white" action="">
+        <div class="text-center">
+            <label for="fName">First Name</label>
+            <input type="text" name="fName" id="fName" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="lName">Last Name</label>
+            <input type="text" name="lName" id="lName" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="subject">Subject</label>
+            <input type="text" name="subject" id="subject" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="box" >Drop your message</label><br><br>
+            <textarea class="form-control-lg" id="box" required>
+
+            </textarea>
+        </div>
+        <br>
+        <div class="text-center">
+            <button class="btn btn-primary" id="submitContact" type="submit">Submit</button>
+        </div>
+        <br>
+        <div class="font-weight-bold text-center text-bg-danger" id="message"></div>
+        <br>
+        <br>
+    </form>
+
+    <p class="align-text-center bg-dark text-white">
+        Have any feedback you want to give us? <button id="displayFeedBackForm" class="bg-primary text-white ">Click here</button> for the feedback form
+    </p>
+</div>
+
+
+<div id="feedBackForm" class="align-text-center bg-dark text-white" style="display: none">
+    <br><br>
+    <h3 class="align-text-center bg-dark text-white">Feed Back</h3>
+    <p class="bg-dark text-white">
+        Here at Volunteer Connect we value feedback from our customers and volunteers. We would love
+        to hear from you in regards to the experience you have had with us!
+    </p>
+
+    <h3 class="text-center bg-dark text-white">Feedback Form</h3>
+    <form class="bg-dark text-white" action="">
+        <div class="text-center">
+            <label for="firstName">First Name</label>
+            <input type="text" name="firstName" id="firstName" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="lastName">Last Name</label>
+            <input type="text" name="lastName" id="lastName" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="emailAddress">Email</label>
+            <input type="email" name="emailAddress" id="emailAddress" required><br><br>
+        </div>
+
+        <div class="text-center">
+            <label for="messageBox" >Drop your message</label><br><br>
+            <input class="form-control-lg" id="messageBox" required>
+
+            </input>
+        </div>
+        <br>
+        <div class="text-center">
+            <button class="btn btn-primary" id="submitFeedback" type="submit">Submit</button>
+        </div>
+        <br>
+        <div class="font-weight-bold text-center text-bg-danger" id="confirmation"></div>
+        <br>
+        <br>
+        <p class="align-text-center bg-dark text-white">
+            Do you have any issues, or would you like us to contact you <button id="displayContactForm" class="bg-primary text-white ">Click here</button> for the feedback form
+        </p>
+
+    </form>
+</div>

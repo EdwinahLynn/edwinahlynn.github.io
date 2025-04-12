@@ -1,0 +1,32 @@
+<h1>Login</h1>
+<div>
+    <form class="col-lg-6 col-md-10 col-sm-12 mb-4">
+
+        <div id="errorMessage">
+
+        </div>
+
+        <div class="input-group mb-3">
+            <label for="userName" class ="input-group-text">Username: </label>
+            <input  id="userName" name="userName" type="text" class="form-control"
+                    aria-describedby="user-error" aria-label="Full Name" required>
+            <span id="userName-error" class="text-danger"></span>
+        </div>
+
+        <div class="input-group mb-3">
+            <label for="emailAddress" class ="input-group-text">Email Address: </label>
+            <input  id="emailAddress" name="emailAddress" type="email" class="form-control"
+                    aria-describedby="emailAddress-error" aria-label="Email Address" required>
+            <span id="emailAddress-error" class="text-danger"></span>
+        </div>
+
+        <div class="input-group mb-3">
+                <label for="password" class="input-group-text"><i class="fa fa-lock"></i>Password</label>
+                <input id="password" name="password" type="password" class="form-control" required>
+            <span id="password-error" class="text-danger"></span>
+        </div>
+
+        <button id="loginButton" type="submit" class="btn btn-primary"><i class="fa-solid fa-envelope"></i> Login</button>
+        <button id="cancelButton" type="reset" class="btn btn-warning"><i class="fa-solid fa-rotate-left"></i> Cancel</button>
+    </form>
+</div>

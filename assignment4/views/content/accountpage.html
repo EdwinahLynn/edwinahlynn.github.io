@@ -1,0 +1,39 @@
+<h1>Create a new Account</h1>
+<div>
+  <form class="col-lg-6 col-md-10 col-sm-12 mb-4 disabled">
+
+    <div id="errorMessage">
+
+    </div>
+
+    <div class="input-group mb-3">
+      <label for="displayNameView" class ="input-group-text">Display: </label>
+      <input  id="displayNameView" name="displayNameNew" type="text" class="form-control"
+              aria-describedby="userNew-error" aria-label="Full Name" required>
+      <span id="displayName-error" class="text-danger"></span>
+    </div>
+
+    <div class="input-group mb-3">
+      <label for="emailAddressView" class ="input-group-text">Email Address: </label>
+      <input  id="emailAddressView" name="emailAddressNew" type="email" class="form-control"
+              aria-describedby="emailAddressNew-error" aria-label="Email Address" required>
+      <span id="emailAddress-error" class="text-danger"></span>
+    </div>
+
+    <div class="input-group mb-3">
+      <label for="userNameView" class ="input-group-text">Username: </label>
+      <input  id="userNameView" name="userNameNew" type="text" class="form-control"
+              aria-describedby="userNew-error" aria-label="Full Name" required>
+      <span id="userName-error" class="text-danger"></span>
+    </div>
+
+    <div class="input-group mb-3">
+      <label for="passwordView" class="input-group-text"><i class="fa fa-lock"></i>Password</label>
+      <input id="passwordView" name="passwordNew" type="password" class="form-control" required>
+      <span id="passwordNew-error" class="text-danger"></span>
+    </div>
+
+    <button id="editAccount" type="button" class="btn btn-primary"><i class="fa-solid fa-envelope"></i> Edit Account</button>
+    <button id="updateAccount" type="submit" class="btn btn-warning"><i class="fa-solid fa-rotate-left"></i> Update Info</button>
+  </form>
+</div>
