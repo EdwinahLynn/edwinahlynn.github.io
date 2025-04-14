@@ -1,17 +1,51 @@
-{
-  "users":
-  [
-    {
-      "DisplayName": "Edwinah Lynn",
-      "Email Address": "edwinahynn@durhamcollege.ca",
-      "Username": "Edwinah",
-      "Password": "edwinahqwerty"
-    },
-    {
-      "DisplayName": "Roy Mbaasa",
-      "Email Address": "roymbaasa@durhamcollege.ca",
-      "Username": "Roy",
-      "Password": "royisthecoolest12345"
-    }
-  ]
-}
+[
+  {
+    "ID": "1",
+    "DisplayName": "Edwinah Lynn",
+    "EmailAddress": "edwinahynn@durhamcollege.ca",
+    "Username": "Edwinah",
+    "Password": "edwinahqwerty"
+  },
+  {
+    "ID": "2",
+    "DisplayName": "Edwinah",
+    "EmailAddress": "edwinahynn@durhamcollege.ca",
+    "Username": "Edwinah",
+    "Password": "edwinahqwerty"
+  },
+  {
+    "ID": "3",
+    "DisplayName": "lynm",
+    "EmailAddress": "lynn@gmail.com",
+    "Username": "lynm",
+    "Password": "1234"
+  },
+  {
+    "ID": "4",
+    "DisplayName": "lynn",
+    "EmailAddress": "lnn@gmail.com",
+    "Username": "lynn",
+    "Password": "12345"
+  },
+  {
+    "ID": "5",
+    "DisplayName": "ben",
+    "EmailAddress": "tem@gmai.com",
+    "Username": "gb",
+    "Password": "qwert"
+  },
+  {
+    "ID": "6",
+    "DisplayName": "dd",
+    "EmailAddress": "raf@gmail.com",
+    "Username": "www",
+    "Password": "123"
+  },
+  {
+    "ID": "7",
+    "DisplayName": "dd",
+    "EmailAddress": "raf@gmail.com",
+    "Username": "www",
+    "Password": "rrrr"
+  }
+]

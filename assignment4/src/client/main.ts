@@ -4,16 +4,36 @@
 
 "use strict";
 // Import the important functions
-import {Header} from "./header.js";
+import {Header, CheckLogin} from "./header.js";
 import {Router} from "./router.js";
 import {AuthGuard} from "./authguard.js";
 import {Footer} from "./footer.js";
-import {NewEvent} from "./eventplanning.js";
+import {
+    deletePost,
+    fetchEvent,
+    fetchPost,
+    fetchUser,
+    fetchUsers,
+    postType,
+    updateEvent,
+    updatePosts
+} from "./api/index.js";
+import {
+    createEvents,
+    createPosts,
+    createUsers,
+    deleteEvent,
+    deleteUserInfo,
+    fetchEvents, fetchPosts,
+    updateUserInfo
+} from "./api/index.js";
+import bcrypt from "bcrypt";
 
 
 // Create the page titles for the paths
 const pageTitles = {
     "/": "Home",
+    "/accountpage": "View Account",
     "/home": "Home",
     "/about": "About",
     "/contact": "Contact Us",
@@ -21,10 +41,14 @@ const pageTitles = {
     "/events": "Events",
     "/gallery": "Gallery",
     "/login": "Login Page",
+    "/new-account": "New Account",
+    "/new-post": "New Post",
     "/opportunities": "Opportunities",
+    "/posts": "Community Posts",
     "/privacypolicy": "Privacy Policy",
     "/statistics": "Statistics",
     "/termsofservice": "Terms of Service",
+    "/update-event": "Update Event",
     "/404": "Page Not Found"
 };
 
@@ -34,15 +58,20 @@ const routes = {
     "/": "views/content/home.html",
     "/home": "views/content/home.html",
     "/about": "views/content/about.html",
+    "/accountpage": "views/content/accountpage.html",
     "/contact": "views/content/contact.html",
     "/eventplanning": "views/content/eventplanning.html",
     "/events": "views/content/events.html",
     "/gallery": "views/content/gallery.html",
     "/login": "views/content/login.html",
+    "/new-account": "views/content/new-account.html",
+    "/new-post": "views/content/new-post.html",
     "/opportunities": "views/content/opportunities.html",
+    "/posts": "views/content/posts.html",
     "/privacypolicy": "./views/content/privacypolicy.html",
     "/statistics": "views/content/statistics.html",
     "/termsofservice": "views/content/termsofservice/",
+    "/update-event": "views/content/update-event.html",
     "/404": "views/content/404.html",
 };
 
@@ -52,14 +81,366 @@ export const router = new Router(routes);
 // IIFE - Immediately Invoked Functional Expression
 (function () {
 
-    // Create a function that displays events from the local storage+
-    function DisplayEventsFromStorage() {
-        console.log("Displaying Events from Storage....");
+    async function DisplayPosts(){
+        console.log("In display posts");
 
-        // If the items in the storage, get the tag that will be used to display them
-        if (localStorage.length > 0){
+        let mainDiv = document.getElementById("forPosts");
+        let rowDiv = document.getElementById("postsRow");
+        if (!mainDiv){
+            console.error("Main Div tag not found")
+            return;
+        }
+        if (!rowDiv){
+            console.error("Main Div tag not found")
+            return;
+        }
+        if (mainDiv.innerHTML !==""){
+            mainDiv.innerHTML = "";
+            rowDiv.innerHTML = "";
+        }
+
+        const posts  = await fetchPosts();
+
+        posts.forEach((post) => {
+            let firstDiv = document.createElement("div");
+            let secondDiv = document.createElement("div");
+            let innerDiv = document.createElement("div");
+            firstDiv.setAttribute("class", "col-sm-12 col-lg-6 p-2 my-3");
+            secondDiv.setAttribute("class", "card bg-dark text-white");
+            innerDiv.setAttribute("class", "card-body");
+
+            let firstParagraph = document.createElement("p");
+            firstParagraph.setAttribute("class", "card-header text-center");
+            let secondParagraph = document.createElement("p");
+            firstParagraph.innerHTML = post.postTitle;
+            secondParagraph.innerHTML = post.postDescription;
+            innerDiv.appendChild(firstParagraph);
+            innerDiv.appendChild(secondParagraph);
+
+            let updateButton = document.createElement("button");
+            updateButton.textContent = "Update Post";
+            updateButton.setAttribute("type", "button");
+            updateButton.setAttribute("class", "btn btn-secondary btn-sm updatePost");
+            updateButton.setAttribute("id", "updatePost");
+            updateButton.setAttribute("value", post.id);
+
+            let deleteButton = document.createElement("button");
+            deleteButton.textContent = "Delete Post";
+            deleteButton.setAttribute("type", "button");
+            deleteButton.setAttribute("class", "btn btn-danger mt-2 btn-sm d-flex justify-content-center deletePost");
+            deleteButton.setAttribute("id", "deletePost");
+            deleteButton.setAttribute("value", post.id);
+
+            innerDiv.appendChild(updateButton);
+            innerDiv.appendChild(deleteButton);
+            secondDiv.appendChild(innerDiv);
+            firstDiv.appendChild(secondDiv);
+            rowDiv.appendChild(firstDiv);
+            mainDiv.appendChild(rowDiv);
+
+        });
+    }
+
+    async function DisplayCommunityPostsPage() {
+        console.log("Display CommunityPostsPage");
+
+        await DisplayPosts();
+
+        document.querySelectorAll("button.deletePost").forEach((button) => {
+            button.addEventListener("click", async function (event) {
+                event.preventDefault();
+
+                const deleteButton = event.target as HTMLButtonElement;
+                const postId = deleteButton.value;
+
+                if (confirm("Are yous sure you want to Delete this Post")) {
+                    try{
+                        console.log(postId);
+                        await deletePost(postId);
+                        await DisplayPosts();
+                    }
+                    catch(error){
+                        console.error(`[ERROR] Failed to delete post:  ${error}`);
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll("button.updatePost").forEach((button) => {
+            button.addEventListener("click", async function (event) {
+                event.preventDefault();
+                const updateButton = event.target as HTMLButtonElement;
+                const postId = updateButton.value;
+                let form = document.getElementById("updateForm");
+                if(!form){
+                    console.log("Form is not found");
+                    return;
+                }
+                form.style.display = "block";
+
+                const posts  = await fetchPost(postId);
+                let titlePostPage = document.getElementById("postTitleUpdate") as HTMLInputElement;
+                let descriptionPostPage = document.getElementById("postDesUpdate") as HTMLInputElement;
+
+                titlePostPage.value = posts.postTitle
+                descriptionPostPage.value = posts.postDescription
+
+                const updatePostButton = document.getElementById("postUpdate") as HTMLButtonElement;
+                const cancelPostButton = document.getElementById("cancelPostUpdate") as HTMLButtonElement;
+                if(!updatePostButton){
+                    console.log("Update button not found");
+                    return;
+                }
+                if(!cancelPostButton){
+                    console.log("Cancel button not found");
+                    return;
+                }
+                updatePostButton.addEventListener("click", async function (event) {
+                    console.log("In seconf update button");
+                    event.preventDefault();
+                    let postTitle = (document.getElementById("postTitleUpdate") as HTMLInputElement).value.trim();
+                    let postDescription = (document.getElementById("postDesUpdate") as HTMLInputElement).value.trim();
+                    const updatedPost = {postTitle, postDescription};
+                    await updatePosts(postId,updatedPost);
+                    form.style.display = "none";
+                    DisplayPosts();
+
+
+                });
+                cancelPostButton.addEventListener("click", async function (event) {
+                    event.preventDefault();
+                    form.style.display = "none";
+                })
+
+            });
+        });
+
+
+        const createPostButton = document.getElementById("createPost") as HTMLButtonElement;
+        if (!createPostButton) {
+            console.error("Button not found");
+            return;
+        }
+        createPostButton.addEventListener("click", function () {
+            router.navigate("/new-post");
+        });
+    }
+
+    function DisplayNewPostPage(){
+        console.log("Display NewPostPage");
+        const newPostButton = document.getElementById("newPost") as HTMLButtonElement;
+        const cancelPostButton = document.getElementById("cancelPost") as HTMLButtonElement;
+
+        newPostButton.addEventListener("click", async (event) => {
+            event.preventDefault();
+            console.log("sup")
+            const postTitle = (document.getElementById("postTitle") as   HTMLInputElement).value.trim();
+            const postDescription = (document.getElementById("postDes") as HTMLInputElement).value.trim();
+
+            const postInformation = {postTitle, postDescription};
+            await createPosts(postInformation);
+
+            router.navigate("/posts");
+        });
+
+        cancelPostButton.addEventListener("click", (event)=>{
+            event.preventDefault();
+            router.navigate("/posts");
+        });
+    }
+
+    function DisplayNewAccountPage(){
+        const createButton = document.getElementById("createAccount");
+        if(!createButton){
+            console.error("Create button not found");
+            return;
+        }
+        createButton.addEventListener("click", async (event) => {
+            event.preventDefault();
+            const displayName = (document.getElementById("DisplayNameNew") as HTMLInputElement).value.trim();
+            const emailAddress = (document.getElementById("emailAddressNew") as HTMLInputElement).value.trim();
+            const userName = (document.getElementById("userNameNew") as HTMLInputElement).value.trim();
+            const password = (document.getElementById("passwordNew") as HTMLInputElement).value.trim();
+            const newUserInfo = {displayName,emailAddress, userName, password};
+
+            const userSession = sessionStorage.getItem("user");
+            console.log(userSession);
+            if (userSession) {
+                sessionStorage.removeItem("user");
+            }
+
+            sessionStorage.setItem("user", JSON.stringify({
+                DisplayName: displayName,
+                Username: userName,
+            }));
+            console.log(userName);
+            router.navigate("/");
+
+            await createUsers(newUserInfo);
+        });
+    }
+
+    async  function DisplayViewAccountPage(){
+        const userSession = sessionStorage.getItem("user");
+
+        if (userSession) {
+            const userSessionInfo = JSON.parse(userSession);
+            const displayNameSession = userSessionInfo.DisplayName;
+            const userNameSession = userSessionInfo.Username;
+            const users = await fetchUsers();
+            console.log(users);
+            const pageName = (document.getElementById("displayNameView") as HTMLInputElement);
+            const pageEmail = (document.getElementById("emailAddressView") as HTMLInputElement);
+            const pageUserName= (document.getElementById("userNameView") as HTMLInputElement);
+            const pagePassword = (document.getElementById("passwordView") as HTMLInputElement);
+            let id = null;
+
+            for (const user of users) {
+                if (user.userName === userNameSession && user.displayName === displayNameSession) {
+                    const email = user.emailAddress;
+                    const password = user.password;
+                    pageName.value = displayNameSession;
+                    pageEmail.value = email;
+                    pageUserName.value = userNameSession;
+                    pagePassword.value = "";
+                    id = user.id;
+                    console.log(id);
+                }
+            }
+            if(!id){
+                return;
+            }
+            const editButton = document.getElementById("editAccount") as HTMLButtonElement;
+            const updateButton = document.getElementById("updateAccount") as HTMLButtonElement;
+            const deleteButton = document.getElementById("deleteAccount") as HTMLButtonElement;
+            if (!editButton) {
+                console.log("Edit Button not found");
+                return;
+            }
+            if (!updateButton) {
+                console.log("Update Button not found");
+                return;
+            }
+            if (!deleteButton) {
+                console.log("Update Button not found");
+                return;
+            }
+
+            editButton.addEventListener("click", async (event) => {
+                event.preventDefault();
+                pageName.disabled = false;
+                pageEmail.disabled = false;
+                pageUserName.disabled = false;
+                pagePassword.disabled = false;
+                updateButton.disabled = false;
+                editButton.disabled = true;
+            });
+
+            updateButton.addEventListener("click", async (event) => {
+                event.preventDefault();
+                const displayName = pageName.value
+                const emailAddress = pageEmail.value;
+                const userName = pageUserName.value;
+                const password = pagePassword.value;
+                const updatedInfo = {displayName, emailAddress, userName, password};
+                pageName.disabled = true;
+                pageEmail.disabled = true;
+                pageUserName.disabled = true;
+                pagePassword.disabled = true;
+                updateButton.disabled = true;
+                editButton.disabled = false;
+                updateButton.disabled = true;
+                await updateUserInfo(id,updatedInfo);
+
+                const userSessionInfo = JSON.parse(userSession);
+                const displayNameSession = userSessionInfo.DisplayName;
+                const userNameSession = userSessionInfo.Username;
+                const response = await fetch("data/users.json");
+                const users = await response.json();
+                for (const user of users) {
+                    if (user.Username === userNameSession && user.DisplayName === displayNameSession) {
+                        const email = user.EmailAddress;
+                        const password = user.Password;
+                        pageName.value = displayName;
+                        pageEmail.value = email;
+                        pageUserName.value = userName;
+                        pagePassword.value = password;
+                    }
+                }
+
+            });
+
+            deleteButton.addEventListener("click", async (event) => {
+                event.preventDefault();
+                if (confirm("Are You sure you want to delete your account?")) {
+                    const userSession = sessionStorage.getItem("user");
+                    if (userSession) {
+                        sessionStorage.removeItem("user");
+                    }
+                    router.navigate("/login");
+                    await deleteUserInfo(id);
+                }
+
+            });
+
+        }
+
+
+    }
+
+    async function DisplayEditEventPage(id="") {
+        if (id ===""){
+            console.log("That id is empty")
+            return;
+        }
+
+        const event = await fetchEvent(id);
+
+        let name = (document.getElementById("uName") as HTMLInputElement);
+        let date = (document.getElementById("uDate") as HTMLInputElement);
+        let description = (document.getElementById("uDescription") as HTMLInputElement);
+        let location = (document.getElementById("uLocation") as HTMLInputElement);
+        let time = (document.getElementById("uTime") as HTMLInputElement);
+
+        name.value = event.eventName;
+        date.value = event.eventDate;
+        description.value = event.eventDescription;
+        location.value = event.eventLocation;
+        time.value = event.eventTime;
+
+        const submitButton = document.getElementById("submitUpdatedEvent")as HTMLButtonElement;
+        const cancelButton = document.getElementById("cancelUpdateEvent") as HTMLButtonElement;
+
+        submitButton.addEventListener("click", async (event) => {
+            event.preventDefault();
+            let eventName = (document.getElementById("uName") as HTMLInputElement).value;
+            let eventDate = (document.getElementById("uDate") as HTMLInputElement).value;
+            let eventDescription = (document.getElementById("uDescription") as HTMLInputElement).value;
+            let eventLocation = (document.getElementById("uLocation") as HTMLInputElement).value;
+            let eventTime = (document.getElementById("uTime") as HTMLInputElement).value;
+
+            const updatedEvent = {eventName, eventDate, eventDescription, eventLocation, eventTime};
+            await updateEvent(id, updatedEvent);
+            router.navigate("/eventplanning");
+
+        })
+
+        cancelButton.addEventListener("click", async (event) => {
+            event.preventDefault();
+        })
+
+
+    }
+
+    // Create a function that displays events from the database
+    async function DisplayEventsFromDatabase() {
+        console.log("Displaying Events from Storage....");
+        let idsList : any = [];
+
+        try{
             let eventList: HTMLElement | null = document.getElementById("forDisplayingEvents");
             let eventInformation = "";
+
 
             // Display an error if the tag isn't found
             if (!eventList){
@@ -67,79 +448,68 @@ export const router = new Router(routes);
                 return;
             }
 
-            // Create an array made of the keys in the local storage
-            let keys:string[] = Object.keys(localStorage);
-            console.log(keys);
+            const events = await fetchEvents();
+            console.log(events);
 
-            // Loop through every key
-            keys.forEach((key:string) => {
-                // Check for the keys that hold information about the events
-                if(key.startsWith("event_")){
-                    // Get the information in the storage based on the key
-                    let eventData :string | null = localStorage.getItem(key);
-
-                    // Display an error message if the information cant be obtained
-                    if (!eventData){
-                        console.log("Key not available");
-                        return;
-                    }
-
-                    try {
-                        // Create a NewEvent Object and deserialize the fetched data from storage
-                        let event = new NewEvent();
-                        event.deserialize(eventData);
-
-                        // Add the information using HTML elements to the empty string
-                        eventInformation += `
-                                    <strong> Event Name : ${event.eventName}</strong>
-                                    <p> Event Description : ${event.eventDescription}</p>
-                                    <p> Event Date : ${event.eventDate}</p>
-                                    <p> Event Time : ${event.eventTime}</p>
-                                    <p> Event Location: ${event.eventLocation}</p>
-                                     <button value="${key}" class="btn btn-danger btn-sm deleteEvent">
-                                        <i class="fa-solid fa-trash"></i> Delete</i>
-                                     </button>
-                                    <br><br>
-                                    `;
-                    }
-                    // Display an error if the try block fails
-                    catch(error){
-                        console.log(error)
-                    }
-                }
-                else{
-                    console.log("No keys found");
-                }
-                // set the HTML tag to the string with information about the events
-                eventList.innerHTML = eventInformation;
-            })
+            events.forEach((event) => {
+                // Add the information using HTML elements to the empty string
+                eventInformation += `
+                    <strong> Event Name : ${event.eventName}</strong>
+                    <p> Event Description : ${event.eventDescription}</p>
+                    <p> Event Date : ${event.eventDate}</p>
+                    <p> Event Time : ${event.eventTime}</p>
+                    <p> Event Location: ${event.eventLocation}</p>
+                     <button value="${event.id}" class="btn btn-danger btn-sm deleteEvent">
+                        <i class="fa-solid fa-trash"></i> Delete</i>
+                     </button>
+                      <button value="${event.id}" class="btn btn-secondary btn-sm updateEvent">
+                        <i class="fa-solid fa-trash"></i> Update</i>
+                     </button>
+                    <br><br>
+                            `;
+                idsList.push(event.id);
+            });
+            eventList.innerHTML = eventInformation;
         }
-        // Attach an event handler to all the delete buttons
-        const deleteButtons = document.querySelectorAll("button.deleteEvent") as NodeListOf<HTMLButtonElement>;
+        catch (error){
+            console.log(`Error fetching contacts ${error}`);
+        }
 
-        // Get all the keys and put them in an array
-        let keys:string[] = Object.keys(localStorage);
+        document.querySelectorAll("button.deleteEvent").forEach((deleteButton) => {
+            deleteButton.addEventListener("click", async function (event) {
+                event.preventDefault()
+                console.log("Delete button pressed");
 
-        // Loop through each button and key and check which ones match
-        deleteButtons.forEach( (button:HTMLButtonElement) => {
-            button.addEventListener("click",function (event:Event) {
-                event.preventDefault();
-                const otherKey = button.value;
-                keys.forEach((key:string) => {
-                    // The ones that match, is the key of the event to be deleted
-                    if (key === otherKey) {
-                        // Display a confirmation message that removes the item from storage when is clicked
-                        if (confirm("Do you want to delete this event?")) {
-                            localStorage.removeItem(key);
-                            DisplayEventsFromStorage();
-                        }}
-                });
+                const Button = event.target as HTMLButtonElement;
+                const eventId:string = Button.value;
+
+                if (confirm("Delete contact, please confirm?")) {
+                    try{
+                        console.log(eventId);
+                        await deleteEvent(eventId);
+                        DisplayEventsFromDatabase();
+                    }
+                    catch(error){
+                        console.error(`[ERROR] Failed to delete contact:  ${error}`);
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll("button.updateEvent").forEach((updateButton) => {
+            updateButton.addEventListener("click", async function (event) {
+                console.log("Update button pressed");
+                const Button = event.target as HTMLButtonElement;
+                const eventId:string = Button.value;
+                DisplayEditEventPage(eventId);
+                router.navigate("/update-event");
+
             });
         });
     }
 
     // Create a function for the event planning page
-    function DisplayEventPlanningPage(){
+    async function DisplayEventPlanningPage(){
         // Get the submit button from the event planning page and display and error if not found
         let submitEventButton:HTMLElement | null = document.getElementById("submitEvent");
         if (!submitEventButton){
@@ -147,48 +517,28 @@ export const router = new Router(routes);
             return;
         }
 
-        // Attach an event handle to the submit button that send the form information to the local storage
-        submitEventButton.addEventListener("click", (event) => {
+        // Attach an event handle to the submit button that send the client server
+        submitEventButton.addEventListener("click", async (event) => {
             event.preventDefault();
             console.log("Form submitted");
 
             // Get the Form HTML Elements
-            let eventName = document.getElementById("eName")as HTMLInputElement;
-            let eventDate = document.getElementById("eDate") as HTMLInputElement;
-            let eventDescription = document.getElementById("eDescription") as HTMLInputElement;
-            let eventLocation = document.getElementById("eLocation") as HTMLInputElement;
-            let eventTime = document.getElementById("eTime") as HTMLInputElement;
+            let eventName = (document.getElementById("eName") as HTMLInputElement).value.trim();
+            let eventDate = (document.getElementById("eDate") as HTMLInputElement).value.trim();
+            let eventDescription = (document.getElementById("eDescription") as HTMLInputElement).value.trim();
+            let eventLocation = (document.getElementById("eLocation") as HTMLInputElement).value.trim();
+            let eventTime = (document.getElementById("eTime") as HTMLInputElement).value.trim();
 
             // Pass the values of the element into the new event object created
-            let newEvent: NewEvent = new NewEvent(eventName.value, eventDescription.value, eventDate.value,
-                eventTime.value, eventLocation.value);
+            const newEvent = {eventName, eventDescription, eventDate, eventTime, eventLocation};
+            await createEvents(newEvent);
+            DisplayEventsFromDatabase();
 
-            // Call the serialize function on the new object
-            if(newEvent.serialize()){
-
-                // Set the local storage key to the current date and time
-                let key:string =`event_${Date.now()}`;
-
-                // Pass the key information and entered data to the local storage
-                localStorage.setItem(key, newEvent.serialize());
-
-                // Reload the events from storage
-                DisplayEventsFromStorage();
-
-                // Display a confirmation message of the received input to the user and route back to the same page
-                let message: HTMLElement | null = document.getElementById("messageSubmitted");
-                if (!message){
-                    console.log("No message element found")
-                    return;
-                }
-                message.innerHTML = "Your form has been submitted";
-                router.navigate("/eventplanning");
-            }
-            // Display and error message is serializing data fails
-            else{
-                console.error("[ERROR] Event serialization failed");
-                alert("All fields are required to be filled");
-            }
+            (document.getElementById("eName") as HTMLInputElement).value = "";
+            (document.getElementById("eDate") as HTMLInputElement).value = "";
+            (document.getElementById("eDescription") as HTMLInputElement).value = "";
+            (document.getElementById("eLocation") as HTMLInputElement).value = "";
+            (document.getElementById("eTime") as HTMLInputElement).value = "";
 
         });
 
@@ -495,6 +845,15 @@ export const router = new Router(routes);
 
         // Get the login button and attach an event listener to it
         let loginButton = (document.getElementById("loginButton")as HTMLButtonElement);
+        let newUserAccount = (document.getElementById("account") as HTMLButtonElement);
+
+        if(!newUserAccount){
+            return;
+        }
+        newUserAccount.addEventListener("click", async () => {
+            router.navigate("/new-account");
+        })
+
         if (!loginButton) {
             console.error("Login button not found");
             return;
@@ -505,20 +864,12 @@ export const router = new Router(routes);
             // Get the values in the username and password field boxes
             const username = (document.getElementById("userName") as HTMLInputElement).value.trim();
             const password =( document.getElementById("password") as HTMLInputElement).value.trim();
+            const email =( document.getElementById("emailAddress") as HTMLInputElement).value.trim();
 
             try {
 
                 // Send a request to the users.json file in the data folder
-                const response = await fetch("data/users.json");
-
-                // Display an error message if the response is not ok
-                if (!response.ok) {
-                    throw new Error(`HTTP error: ${response.status}`);
-                }
-
-                // Assign the property to a variable
-                const jsonData = await response.json();
-                const users = jsonData.users;
+                const users = await fetchUsers();
 
                 // Display an error message if the variable is not an array
                 if (!Array.isArray(users)) {
@@ -527,28 +878,44 @@ export const router = new Router(routes);
 
                 // Declare and assign values to variables that will help with session information
                 let isMatch = false;
-                let sessionUser = null;
+                console.log(email);
+                console.log(username);
 
                 // Loop through the array and check if the information entered matches any in the file
                 for (const user of users) {
-                    if (user.Username === username && user.Password === password) {
+                    console.log(user.userName);
+                    console.log(user.emailAddress)
+                    if (user.userName === username && user.emailAddress === email) {
+                        console.log(user.userName);
+                        console.log(user.password);
+                        const textPassword = await fetchUser(user.id, password);
+                        console.log(textPassword);
+                        if(textPassword){
+                            // If there are values that match, set isMatch to true and assign that user to the session user variable
+                            isMatch = true;
+                            // Using the key word user, place the user into that session
+                            sessionStorage.setItem("user", JSON.stringify({
+                                DisplayName: user.displayName,
+                                Username: user.userName,
+                            }));
+                            break;
+                        }
+                        else{
+                            isMatch = false;
+                            let errorMessage = document.getElementById("errorMessage");
+                            if (errorMessage){
+                                errorMessage.classList.add("alert", "alert-danger");
+                                errorMessage.textContent = "Password. Please Try again";
+                                errorMessage.style.display = "block";}
+                        }
 
-                        // If there are values that match, set isMatch to true and assign that user to the session user variable
-                        isMatch = true;
-                        sessionUser = user;
-                        break;
+
                     }
                 }
+                console.log(isMatch);
 
                 // If there was a match from the array
                 if (isMatch) {
-
-                    // Using the key word user, place the user into that session
-                    sessionStorage.setItem("user", JSON.stringify({
-                        DisplayName: sessionUser.DisplayName,
-                        Username: sessionUser.Username,
-                    }));
-
                     // Redirect to the main page
                     Header().then(() =>{
                         router.navigate("/home");
@@ -560,7 +927,7 @@ export const router = new Router(routes);
                     let errorMessage = document.getElementById("errorMessage");
                     if (errorMessage){
                     errorMessage.classList.add("alert", "alert-danger");
-                    errorMessage.textContent = "Invalid Username or password. Please Try again";
+                    errorMessage.textContent = "Invalid Username";
                     errorMessage.style.display = "block";}
                 }
             }
@@ -581,7 +948,7 @@ export const router = new Router(routes);
             let imageItems = document.querySelector(".carousel-inner") as HTMLElement;
 
             // Send a request to the images.json file that has the images
-            const response = await fetch("data/images.json");
+            const response = await fetch("../data/images.json");
 
             // Display an error message if the response is not ok
             if (!response.ok) {
@@ -1105,9 +1472,9 @@ export const router = new Router(routes);
         AuthGuard();
     });
 
-    function handlePageLogic(path:string){
+    async function handlePageLogic(path: string) {
         // This calls the functions based on what path is passed
-        switch(path){
+        switch (path) {
             case "/":
                 DisplayHomePage();
                 break;
@@ -1122,7 +1489,7 @@ export const router = new Router(routes);
                 break;
             case"/eventplanning":
                 DisplayEventPlanningPage();
-                DisplayEventsFromStorage();
+                DisplayEventsFromDatabase();
                 break;
             case"/events":
                 DisplayEventsPage();
@@ -1145,6 +1512,22 @@ export const router = new Router(routes);
             case"/gallery":
                 DisplayImages();
                 break;
+            case"/accountpage":
+                DisplayViewAccountPage();
+                break;
+            case"/new-account":
+                DisplayNewAccountPage();
+                break;
+            case"/posts":
+                DisplayCommunityPostsPage();
+                break;
+            case"/new-post":
+                DisplayNewPostPage();
+                break;
+            case"/update-event":
+                DisplayEditEventPage();
+                break;
+
         }
     }
 

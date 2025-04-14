@@ -117,7 +117,7 @@ export function updateNavBarLinks(){
 }
 
 // Create a function to check the login status of the user
-function CheckLogin() {
+export function CheckLogin() {
 
     // Get the login link and display an error message if it's not found
     const loginNav = document.getElementById("login") as HTMLAnchorElement;
@@ -141,8 +141,12 @@ function CheckLogin() {
         // Make the links to the statistics page and event planning page visible to the user
         let statisticsNavLink = document.getElementById("stat") as HTMLElement;
         let eventsPlanningNavLink  = document.getElementById("planning") as HTMLElement;
+        let accountPageNavLink = document.getElementById("accountPage") as HTMLElement;
+        let communityPostNavLink = document.getElementById("communityPosts") as HTMLElement;
         statisticsNavLink.style.display= "block";
         eventsPlanningNavLink.style.display = "block";
+        accountPageNavLink.style.display = "block";
+        communityPostNavLink.style.display = "block";
 
         // Display a welcome message to the user
         let message = document.getElementById("welcomeMessage");
@@ -166,8 +170,12 @@ function CheckLogin() {
         // Hide the links to the statistics and event planning page
         let statisticsNavLink = document.getElementById("stat") as HTMLElement;
         let eventsPlanningNavLink  = document.getElementById("planning") as HTMLElement;
+        let accountPageNavLink = document.getElementById("accountPage") as HTMLElement;
+        let communityPostNavLink = document.getElementById("communityPosts") as HTMLElement;
         statisticsNavLink.style.display = "none";
         eventsPlanningNavLink.style.display = "none";
+        accountPageNavLink.style.display = "none";
+        communityPostNavLink.style.display = "none";
     }
 }
 

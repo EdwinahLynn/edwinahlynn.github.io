@@ -1,0 +1,34 @@
+<h1>Community Posts</h1>
+
+<div class="container-fluid" id = "forPosts">
+    <div class="row" id = "postsRow">
+
+    </div>
+
+</div>
+
+<div>
+<button id="createPost">Create Post</button>
+</div>
+
+<div id="updateForm" style="display: none">
+<h1>Update Post</h1>
+<form>
+    <div class="text-center">
+        <label for="postTitleUpdate">Post Title:</label>
+        <input type="text" name="postTitleUpdate" id="postTitleUpdate" required><br><br>
+    </div>
+
+    <div class="text-center">
+        <label for="postDesUpdate" >Description</label><br><br>
+        <textarea class="form-control-lg w-200" id="postDesUpdate" required>
+
+    </textarea>
+    </div>
+    <br>
+    <div class="text-center">
+        <button id="postUpdate" class="btn btn-success" type="button">Submit</button>
+        <button id="cancelPostUpdate" class="btn btn-primary"  type="button">Cancel</button>
+    </div>
+</form>
+</div>

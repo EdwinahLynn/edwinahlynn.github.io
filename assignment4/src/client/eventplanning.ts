@@ -5,6 +5,7 @@
  */
 
 export class NewEvent {
+    private _id: string;
     private _eventName: string;
     private _eventDescription: string;
     private _eventDate: string;
@@ -13,20 +14,38 @@ export class NewEvent {
 
     /**
      * Constructs a new Contact instance
+     * @param id
      * @param eventName
      * @param eventDescription
      * @param eventDate
      * @param eventTime
      * @param eventLocation
      */
-        constructor(eventName = "", eventDescription = "", eventDate = "", eventTime = "",
+        constructor(id="", eventName = "", eventDescription = "", eventDate = "", eventTime = "",
         eventLocation = "") {
+            this._id = id;
             this._eventName = eventName;
             this._eventDescription = eventDescription;
             this._eventDate = eventDate;
             this._eventTime= eventTime;
             this._eventLocation = eventLocation;
         }
+
+    /**
+     * Gets the id of the event
+     * @returns {string}
+     */
+    get id():string {
+        return this._id;
+    }
+
+    /**
+     * Sets the id of the event
+     * @param id
+     */
+    set id(id:string) {
+        this._id = id;
+    }
 
         /**
          * Gets the name of the event
